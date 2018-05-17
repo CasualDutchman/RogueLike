@@ -9,10 +9,12 @@ public class LevelManager : MonoBehaviour {
 
     LevelGeneration levelGenerator;
 
-    public LevelSettings levelSettings;
+    public LevelSettings easyLevelSettings;
+    public LevelSettings customLevelSettings;
 
     public bool disableRoomDespawning;
     public bool usePlayerPref;
+    bool hasCustomSettings;
 
     public List<Room> rooms = new List<Room>();
 
@@ -21,15 +23,37 @@ public class LevelManager : MonoBehaviour {
     }
 
     void Start () {
-        if (usePlayerPref && PlayerPrefs.HasKey("Seed"))
-            levelSettings.seed = PlayerPrefs.GetInt("Seed");
+        if (usePlayerPref && PlayerPrefs.HasKey("CustomLevelSettings")) {
+            hasCustomSettings = PlayerPrefs.GetInt("CustomLevelSettings") == 1;
+            Debug.Log(hasCustomSettings);
+
+            if (hasCustomSettings && PlayerPrefs.HasKey("LevelSettings")) {
+                Debug.Log(PlayerPrefs.GetString("LevelSettings"));
+                string[] data = PlayerPrefs.GetString("LevelSettings").Split('/');
+
+                customLevelSettings.seed = PlayerPrefs.GetInt("Seed");
+
+                customLevelSettings.mainRoadLengthMin = int.Parse(data[0]);
+                customLevelSettings.mainRoadLengthMax = int.Parse(data[1]);
+                customLevelSettings.branchWeight = int.Parse(data[2]);
+                customLevelSettings.maxBranchOut = int.Parse(data[3]);
+                customLevelSettings.offsetSpacingMin = int.Parse(data[4]);
+                customLevelSettings.offsetSpacingMax = int.Parse(data[5]);
+                customLevelSettings.offsetLocalMin = int.Parse(data[6]);
+                customLevelSettings.offsetLocalMax = int.Parse(data[7]);
+            }
+        }else {
+            easyLevelSettings.seed = PlayerPrefs.GetInt("Seed");
+        }
+
+        Debug.Log(PlayerPrefs.GetInt("Seed"));
 
         levelGenerator = GetComponent<LevelGeneration>();
         levelGenerator.levelManager = this;
         levelGenerator.genStages = 100;
         levelGenerator.ClearLevel();
 
-        levelGenerator.GenerateLevel(levelSettings, disableRoomDespawning);
+        levelGenerator.GenerateLevel(usePlayerPref && hasCustomSettings ? customLevelSettings : easyLevelSettings, disableRoomDespawning);
 
     }
 

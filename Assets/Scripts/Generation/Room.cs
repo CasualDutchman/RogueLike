@@ -30,6 +30,8 @@ public class Room : MonoBehaviour {
             activeRoom = true;
         }
 
+        CameraRig.instance.SetNewPosition(roomData.node.worldPosition);
+
         if (endRoom)
             Debug.Log("End Game");
     }

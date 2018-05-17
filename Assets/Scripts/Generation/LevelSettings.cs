@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "LevelSettings", menuName = "Settings/LevelSettings", order = 1)]
 public class LevelSettings : ScriptableObject {
 
-    [Header("Levele Gen")]
+    [Header("Level Gen")]
     public int seed;
 
     public int mainRoadLengthMin;
