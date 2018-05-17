@@ -12,12 +12,12 @@ public class PlayerMovement : MonoBehaviour {
 
     void Start () {
         controller = GetComponent<CharacterController>();
-	}
+    }
 	
 	void Update () {
         if (controller.isGrounded) {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            moveDirection = transform.TransformDirection(moveDirection);
+            //moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= speed;
         }
         moveDirection.y -= gravity * Time.deltaTime;

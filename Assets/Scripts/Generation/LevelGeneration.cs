@@ -50,6 +50,8 @@ public class LevelGeneration : MonoBehaviour {
     public Transform playerTransform;
 
     public GameObject doorObj;
+    public GameObject[] gameplayObjects;
+    public GameObject[] decorationObjects;
 
     public LevelManager levelManager;
 
@@ -169,7 +171,7 @@ public class LevelGeneration : MonoBehaviour {
         }
 
         sw.Stop();
-        Debug.Log(sw.ElapsedMilliseconds);
+        Debug.Log("Generated in " + sw.ElapsedMilliseconds + " ms/ " + sw.ElapsedTicks + " ticks");
 
         if (!spawn) {
             Destroy(this);
@@ -308,11 +310,60 @@ public class LevelGeneration : MonoBehaviour {
     }
 
     void SpawnGameplay() {
-        
+        foreach (Room room in roomLayout) {
+            if (room.roomData.node == spawnNode || room.roomData.node == endNode)
+                continue;
+
+            if (room.roomData.roomType == RoomType.Room) {
+                List<Vector3> list = new List<Vector3>();
+                Vector3 insideSW = Vector3.Lerp(room.roomData.SW, room.roomData.NE, 0.2f);
+                Vector3 insideNE = Vector3.Lerp(room.roomData.SW, room.roomData.NE, 0.8f);
+                Vector3 insideSE = Vector3.Lerp(room.roomData.SE, room.roomData.NW, 0.2f);
+                Vector3 insideNW = Vector3.Lerp(room.roomData.SE, room.roomData.NW, 0.8f);
+                Vector3[] insideArr = new Vector3[] { insideSW, insideNE, insideSE, insideNW };
+                int[] arr = new int[] { 0, 2, 2, 1, 1, 3, 3, 0 };
+                int amount = rng.Next(3, 5);
+                while (list.Count < amount) {
+                    int index1 = rng.Next(0, 4), index2 = rng.Next(0, 4);
+                    int perc1 = rng.Next(0, 200), perc2 = rng.Next(0, 200), perc3 = rng.Next(0, 200);
+                    Vector3 pos1 = Vector3.Lerp(insideArr[arr[index1 * 2]], insideArr[arr[(index1 * 2) + 1]], perc1 * 0.005f);
+                    Vector3 pos2 = Vector3.Lerp(insideArr[arr[index2 * 2]], insideArr[arr[(index2 * 2) + 1]], perc2 * 0.005f);
+                    Vector3 pos3 = Vector3.Lerp(pos1, pos2, perc3 * 0.005f);
+                    if (list.Count <= 0) {
+                        list.Add(pos3);
+                        GameObject go = Instantiate(gameplayObjects[rng.Next(gameplayObjects.Length)], room.transform.GetChild(0));
+                        go.transform.position = pos3;
+                        go.transform.eulerAngles = new Vector3(0, rng.Next(0, 360), 0);
+                    } else {
+                        bool add = false;
+                        Vector3 addVec3 = Vector3.zero;
+                        foreach(Vector3 vec3 in list) {
+                            if (Vector3.Distance(vec3, pos3) > 5.5f) {
+                                add = true;
+                                addVec3 = pos3;
+
+                                GameObject go = Instantiate(gameplayObjects[rng.Next(gameplayObjects.Length)], room.transform.GetChild(0));
+                                go.transform.position = pos3;
+                                go.transform.eulerAngles = new Vector3(0, rng.Next(0, 360), 0);
+                                break;
+                            } else {
+                                continue;
+                            }
+                        }
+                        if (add) {
+                            list.Add(addVec3);
+                        }
+                    }
+                }
+            } else {
+                continue;
+            }
+        }
     }
 
     void Decorate() {
         SpawnDoors();
+        SpawnDecoration();
     }
 
     void SpawnDoors() {
@@ -320,6 +371,29 @@ public class LevelGeneration : MonoBehaviour {
             foreach(KeyValuePair<Vector3, float> doorPos in room.roomData.doorLocations) {
                 GameObject go = Instantiate(doorObj, doorPos.Key, Quaternion.Euler(0, doorPos.Value, 0));
                 go.transform.parent = room.transform.GetChild(0).transform;
+            }
+        }
+    }
+
+    void SpawnDecoration() {
+        foreach (Room room in roomLayout) {
+            Vector3 insideSW = Vector3.Lerp(room.roomData.SW, room.roomData.NE, 0.05f);
+            Vector3 insideNE = Vector3.Lerp(room.roomData.SW, room.roomData.NE, 0.95f);
+            Vector3 insideSE = Vector3.Lerp(room.roomData.SE, room.roomData.NW, 0.05f);
+            Vector3 insideNW = Vector3.Lerp(room.roomData.SE, room.roomData.NW, 0.95f);
+            Vector3[] insideArr = new Vector3[] { insideSW, insideNE, insideSE, insideNW };
+            int[] arr = new int[] { 0, 2, 2, 1, 1, 3, 3, 0 };
+            int amount = room.roomData.roomType == RoomType.Room ? rng.Next(10, 25) : rng.Next(7, 15);
+            for (int i = 0; i < amount; i++) {
+                int index1 = rng.Next(0, 4), index2 = rng.Next(0, 4);
+                int perc1 = rng.Next(0, 200), perc2 = rng.Next(0, 200), perc3 = rng.Next(0, 200);
+                Vector3 pos1 = Vector3.Lerp(insideArr[arr[index1 * 2]], insideArr[arr[(index1 * 2) + 1]], perc1 * 0.005f);
+                Vector3 pos2 = Vector3.Lerp(insideArr[arr[index2 * 2]], insideArr[arr[(index2 * 2) + 1]], perc2 * 0.005f);
+                Vector3 pos3 = Vector3.Lerp(pos1, pos2, perc3 * 0.005f);
+
+                GameObject go = Instantiate(decorationObjects[rng.Next(decorationObjects.Length)], room.transform.GetChild(0));
+                go.transform.position = pos3;
+                go.transform.eulerAngles = new Vector3(0, rng.Next(0, 360), 0);
             }
         }
     }

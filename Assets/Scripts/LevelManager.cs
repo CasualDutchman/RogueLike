@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class LevelManager : MonoBehaviour {
 
@@ -31,8 +32,12 @@ public class LevelManager : MonoBehaviour {
         levelGenerator.GenerateLevel(levelSettings, disableRoomDespawning);
 
     }
-	
-	void Update () {
+
+    void OnDisable() {
+        GetComponent<NavMeshSurface>().RemoveData();
+    }
+
+    void Update () {
 		
 	}
 }
