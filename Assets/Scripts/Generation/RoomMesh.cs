@@ -136,7 +136,7 @@ public class RoomMesh : MonoBehaviour {
                         uvs.Add(new Vector2(L, U));
                     }
 
-                    randomWall = Random.Range(0, 2);
+                    randomWall = Random.Range(0, 3);
                 }
             }
         }
@@ -145,11 +145,9 @@ public class RoomMesh : MonoBehaviour {
     static void GetQuad(List<Vector3> inShape, float size, int x, int y, List<Vector3> verts, List<int> tris, List<Vector2> uvs) {
         Vector3[] v3Array = GetSquareData(inShape, size, x, y);
 
-        int randomQuad = Random.Range(0, 4);
-
         int max = v3Array.Length - 2;
         for (int i = 0; i < max; i++) {
-            MeshData triData = GetTriangle(v3Array[0], v3Array[i + 2], v3Array[i + 1], size, x * size, y * size, randomQuad);
+            MeshData triData = GetTriangle(v3Array[0], v3Array[i + 2], v3Array[i + 1], size, x * size, y * size);
             
             foreach (Vector3 item in triData.vertices) {
                 verts.Add(item);
@@ -164,7 +162,7 @@ public class RoomMesh : MonoBehaviour {
         }
     }
 
-    static MeshData GetTriangle(Vector3 p1, Vector3 p2, Vector3 p3, float size, float originX, float originY, int uvXOffset) {
+    static MeshData GetTriangle(Vector3 p1, Vector3 p2, Vector3 p3, float size, float originX, float originY) {
         int[] iArr = new int[3];
 
         float dot = Vector3.Cross(p2 - p1, p3 - p1).y;
@@ -179,7 +177,8 @@ public class RoomMesh : MonoBehaviour {
         }
 
         float f = 0.0005f;
-        float offset = uvXOffset * 0.25f;
+        int uv = Mathf.FloorToInt(Mathf.PerlinNoise(originX / 6.5f, originY / 6.5f) * 4f);
+        float offset = uv * 0.25f;
 
         return new MeshData(new Vector3[] { p1, p2, p3 }, iArr, new Vector2[] {
                 new Vector2(offset + f + ((p1.x - originX) * (0.25f - f)) / size, 0.75f + f + ((p1.z - originY) * (0.25f - f)) / size),
