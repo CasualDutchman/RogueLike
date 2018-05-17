@@ -392,8 +392,8 @@ public class LevelGeneration : MonoBehaviour {
                 Vector3 pos3 = Vector3.Lerp(pos1, pos2, perc3 * 0.005f);
 
                 GameObject go = Instantiate(decorationObjects[rng.Next(decorationObjects.Length)], room.transform.GetChild(0));
-                go.transform.position = pos3;
-                go.transform.eulerAngles = new Vector3(0, rng.Next(0, 360), 0);
+                go.transform.position = pos3 + Vector3.up * 0.01f;
+                //go.transform.eulerAngles = new Vector3(0, rng.Next(0, 4) * 90, 0);
             }
         }
     }
