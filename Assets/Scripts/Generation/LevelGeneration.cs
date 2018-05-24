@@ -536,6 +536,7 @@ public class LevelGeneration : MonoBehaviour {
     void SpawnStencilRoom(Room room) {
         GameObject go = new GameObject("Stencil");
         go.transform.parent = room.transform.GetChild(0);
+        go.transform.localPosition += Vector3.up * 0.0003f;
 
         MeshFilter filter = go.AddComponent<MeshFilter>();
         MeshRenderer render = go.AddComponent<MeshRenderer>();

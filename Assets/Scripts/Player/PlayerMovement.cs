@@ -5,18 +5,20 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
 
     CharacterController controller;
+    Character character;
 
     public float speed = 6.0F;
     private float gravity = 20.0F;
     private Vector3 moveDirection = Vector3.zero;
 
-    public AnimationCurve bobCurve;
-    public float rate;
+    public AnimationCurve bobCurve, idleHeadCurve, idleHandCurve;
+    public float idleRate;
     float timer;
     bool up = true;
 
     void Start () {
         controller = GetComponent<CharacterController>();
+        character = GetComponent<Character>();
     }
 	
 	void Update () {
@@ -33,7 +35,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void Animate(float magnitude) {
-        timer += Time.deltaTime * (up ? magnitude : -magnitude);
+        timer += Time.deltaTime * (magnitude > float.Epsilon ? (up ? magnitude : -magnitude) : (up ? idleRate : -idleRate));
         if (timer >= 1) {
             up = false;
         }else if (timer < 0) {
@@ -49,6 +51,8 @@ public class PlayerMovement : MonoBehaviour {
         }else {
             transform.GetChild(0).localPosition = Vector3.Lerp(transform.GetChild(0).localPosition, new Vector3(0, 0, 0), Time.deltaTime);
             transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 10);
+
+            character.renderHead.transform.localPosition = character.originHead + character.renderHead.transform.up * (idleHeadCurve.Evaluate(timer) * 0.5f);
         }
     }
 }

@@ -8,6 +8,8 @@ public class Character : MonoBehaviour {
 
     public CharacterCustom custom;
 
+    public Vector3 originHair, originHead, originBody, originLHand, originRHand;
+
 	void Start () {
         CharacterInfo info = custom.GetRandomCharacter();
         renderHair.sprite = info.hair;
@@ -15,5 +17,11 @@ public class Character : MonoBehaviour {
         renderBody.sprite = info.body;
         renderLHand.sprite = info.hand;
         renderRHand.sprite = info.hand;
+
+        originHair = renderHair.transform.localPosition;
+        originHead = renderHead.transform.localPosition;
+        originBody = renderBody.transform.localPosition;
+        originLHand = renderLHand.transform.localPosition;
+        originRHand = renderRHand.transform.localPosition;
     }
 }
