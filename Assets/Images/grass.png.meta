@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 7092a234caf28f04cb2b43e0f110853f
-timeCreated: 1526563017
+timeCreated: 1527093067
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -9,6 +9,7 @@ TextureImporter:
     21300004: grass_2
     21300006: grass_3
     21300008: grass_4
+    21300010: grass_5
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -96,9 +97,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 28
-        width: 9
-        height: 4
+        y: 22
+        width: 5
+        height: 10
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -109,10 +110,10 @@ TextureImporter:
       name: grass_1
       rect:
         serializedVersion: 2
-        x: 9
-        y: 28
-        width: 9
-        height: 4
+        x: 7
+        y: 23
+        width: 6
+        height: 9
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -123,10 +124,10 @@ TextureImporter:
       name: grass_2
       rect:
         serializedVersion: 2
-        x: 17
-        y: 28
-        width: 7
-        height: 4
+        x: 15
+        y: 16
+        width: 5
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,10 +138,10 @@ TextureImporter:
       name: grass_3
       rect:
         serializedVersion: 2
-        x: 23
-        y: 28
-        width: 5
-        height: 4
+        x: 1
+        y: 4
+        width: 11
+        height: 17
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,12 +152,26 @@ TextureImporter:
       name: grass_4
       rect:
         serializedVersion: 2
-        x: 27
-        y: 28
-        width: 5
-        height: 4
+        x: 21
+        y: 17
+        width: 11
+        height: 15
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: grass_5
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 0
+        width: 18
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

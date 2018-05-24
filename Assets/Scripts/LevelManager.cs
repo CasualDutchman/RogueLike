@@ -46,7 +46,7 @@ public class LevelManager : MonoBehaviour {
             easyLevelSettings.seed = PlayerPrefs.GetInt("Seed");
         }
 
-        Debug.Log(PlayerPrefs.GetInt("Seed"));
+        //Debug.Log(PlayerPrefs.GetInt("Seed"));
 
         levelGenerator = GetComponent<LevelGeneration>();
         levelGenerator.levelManager = this;
