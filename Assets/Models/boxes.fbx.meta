@@ -13,6 +13,7 @@ ModelImporter:
     100010: Plane.002
     100012: Plane.003
     100014: Cube.002
+    100016: Cube.003
     400000: //RootNode
     400002: Cube
     400004: Cube.001
@@ -21,6 +22,7 @@ ModelImporter:
     400010: Plane.002
     400012: Plane.003
     400014: Cube.002
+    400016: Cube.003
     2300000: Cube
     2300002: Cube.001
     2300004: Plane
@@ -28,6 +30,7 @@ ModelImporter:
     2300008: Plane.002
     2300010: Plane.003
     2300012: Cube.002
+    2300014: Cube.003
     3300000: Cube
     3300002: Cube.001
     3300004: Plane
@@ -35,6 +38,7 @@ ModelImporter:
     3300008: Plane.002
     3300010: Plane.003
     3300012: Cube.002
+    3300014: Cube.003
     4300000: Cube.001
     4300002: Cube
     4300004: Plane
@@ -42,6 +46,7 @@ ModelImporter:
     4300008: Plane.002
     4300010: Plane.001
     4300012: Cube.002
+    4300014: Cube.003
   externalObjects:
   - first:
       type: UnityEngine:Material

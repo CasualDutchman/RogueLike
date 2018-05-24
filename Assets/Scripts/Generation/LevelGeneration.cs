@@ -470,7 +470,7 @@ public class LevelGeneration : MonoBehaviour {
                                     addVec3 = place;
 
                                     GameObject go = Instantiate(cat.objects[rng.Next(0, cat.objects.Length)], room.transform.GetChild(0));
-                                    go.transform.position = place + Vector3.up * 2;
+                                    go.transform.position = place + Vector3.up * cat.positionGridPlace;
                                     go.transform.eulerAngles = new Vector3(0, rotY, 0);
                                     break;
                                 }
@@ -541,7 +541,7 @@ public class LevelGeneration : MonoBehaviour {
         MeshRenderer render = go.AddComponent<MeshRenderer>();
 
         //filter.mesh = room.roomData.GetStencilMesh(wallheight);
-        filter.mesh = room.transform.GetChild(0).GetComponent<MeshFilter>().mesh;
+        filter.mesh = room.transform.GetChild(0).GetComponent<MeshFilter>().sharedMesh;
         render.material = stencilMaterial;
     }
 

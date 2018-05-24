@@ -177,7 +177,7 @@ public class RoomMesh : MonoBehaviour {
         }
 
         float f = 0.0005f;
-        int uv = Mathf.FloorToInt(Mathf.PerlinNoise(originX / 6.5f, originY / 6.5f) * 4f);
+        int uv = Mathf.FloorToInt(Mathf.PerlinNoise(originX / .99f, originY / .99f) * 4f);
         float offset = uv * 0.25f;
 
         return new MeshData(new Vector3[] { p1, p2, p3 }, iArr, new Vector2[] {
