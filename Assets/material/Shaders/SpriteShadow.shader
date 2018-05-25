@@ -3,7 +3,7 @@
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
-	_Color("Tint", Color) = (1,1,1,1)
+	[PerRendererData] _Color("_Color", Color) = (1,1,1,1)
 		_Cutoff("Shadow alpha cutoff", Range(0,1)) = 0.5
 	}
 

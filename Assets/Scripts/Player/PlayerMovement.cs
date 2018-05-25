@@ -32,6 +32,12 @@ public class PlayerMovement : MonoBehaviour {
 
         Vector3 v3 = new Vector3(moveDirection.x, 0, moveDirection.z);
         Animate(v3.magnitude);
+
+        Vector3 mouse = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        Vector3 player = Camera.main.WorldToViewportPoint(transform.position);
+        mouse = mouse - player;
+        character.UpdateCharacter(mouse.x, mouse.y);
+        character.FollowArm(player, mouse);
     }
 
     void Animate(float magnitude) {
@@ -46,13 +52,13 @@ public class PlayerMovement : MonoBehaviour {
             v3.y = bobCurve.Evaluate(timer);
             transform.GetChild(0).localPosition = v3;
 
-            Vector3 r3 = Vector3.Lerp(new Vector3(0, 0, 6f), new Vector3(0, 0, -6f), timer);
+            Vector3 r3 = Vector3.Lerp(new Vector3(20, 0, 6f), new Vector3(20, 0, -6f), timer);
             transform.GetChild(0).localEulerAngles = r3;
         }else {
             transform.GetChild(0).localPosition = Vector3.Lerp(transform.GetChild(0).localPosition, new Vector3(0, 0, 0), Time.deltaTime);
-            transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 10);
+            transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(20, 0, 0), Time.deltaTime * 10);
 
-            character.renderHead.transform.localPosition = character.originHead + character.renderHead.transform.up * (idleHeadCurve.Evaluate(timer) * 0.5f);
+            //character.renderHead.transform.localPosition = character.originHead + character.renderHead.transform.up * (idleHeadCurve.Evaluate(timer) * 0.5f);
         }
     }
 }

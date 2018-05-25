@@ -514,7 +514,7 @@ public class LevelGeneration : MonoBehaviour {
         if (themeSettings.fogObject != null) {
             foreach (Room room in roomLayout) {
                 GameObject go = Instantiate(themeSettings.fogObject, room.transform.GetChild(0));
-                go.transform.position = room.roomData.node.worldPosition + Vector3.up * 0.09f;
+                go.transform.position = room.roomData.node.worldPosition + Vector3.up * 0.2f;
 
                 Vector3[] arr = new Vector3[] { room.roomData.SW, room.roomData.NW, room.roomData.NW, room.roomData.NE };
                 int indexClosest = 0;

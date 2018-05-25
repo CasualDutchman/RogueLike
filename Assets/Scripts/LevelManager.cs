@@ -42,7 +42,7 @@ public class LevelManager : MonoBehaviour {
                 customLevelSettings.offsetLocalMin = int.Parse(data[6]);
                 customLevelSettings.offsetLocalMax = int.Parse(data[7]);
             }
-        }else {
+        }else if(usePlayerPref) {
             easyLevelSettings.seed = PlayerPrefs.GetInt("Seed");
         }
 

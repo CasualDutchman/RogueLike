@@ -10,8 +10,6 @@ public class Enemy : MonoBehaviour {
 
     public Transform target;
 
-    private Vector3 moveDirection = Vector3.zero;
-
     public AnimationCurve bobCurve;
     public float rate;
     float timer;
@@ -31,6 +29,8 @@ public class Enemy : MonoBehaviour {
 
         Vector3 v3 = new Vector3(agent.velocity.x, 0, agent.velocity.z);
         Animate(v3.magnitude);
+
+        character.UpdateCharacter(agent.velocity.x, agent.velocity.z);
     }
 
     void Animate(float magnitude) {

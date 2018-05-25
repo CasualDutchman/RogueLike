@@ -1,6 +1,14 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "My Particles/Additive" {
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+/*
+Stencil{
+Ref 1
+Comp Equal
+}
+*/
+
+Shader "MyParticles/Additive" {
 	Properties{
 		_TintColor("Tint Color", Color) = (0.5,0.5,0.5,0.5)
 		_MainTex("Particle Texture", 2D) = "white" {}
@@ -9,15 +17,16 @@ Shader "My Particles/Additive" {
 
 		Category{
 		Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+
 		Stencil{
 		Ref 1
 		Comp Equal
 	}
+
 		Blend SrcAlpha One
 		AlphaTest Greater .01
 		ColorMask RGB
 		Cull Off Lighting Off ZWrite Off Fog{ Color(0,0,0,0) }
-		
 		BindChannels{
 		Bind "Color", color
 		Bind "Vertex", vertex
