@@ -6,16 +6,31 @@ public class Character : MonoBehaviour {
 
     public SpriteRenderer renderHairFront, renderHairBack, renderHead, renderBody, renderLHand, renderRHand, renderGun;
 
+    public Transform barrel;
+
     public CharacterCustom custom;
 
-    public Vector3 originHairFront, originHairBack, originHead, originBody, originLHand, originRHand, originGun;
+    public Vector3 originHairFront, originHairBack, originHead, originBody, originLHand, originRHand, originGun, originBarrel;
+    Vector3 currentRHand, currentLHand;
+
+    public AnimationCurve zRotCurve;
+
+    [Header("one handed")]
+    public AnimationCurve xRotCurveOne;
+    public AnimationCurve xPosCurveOne, zPosCurveOne;
+
+    [Header("Two handed")]
+    public AnimationCurve xRotCurveTwo;
+    public AnimationCurve xPosCurveTwo, zPosCurveTwo;
 
     CharacterInfo info;
+
+    Handed handed = Handed.One;
 
     bool front = true;
     bool left = true;
 
-    Vector3 o, p;
+    public float angle;
 
     void Start () {
         info = custom.GetRandomCharacter();
@@ -32,38 +47,59 @@ public class Character : MonoBehaviour {
         originBody = renderBody.transform.localPosition;
         originLHand = renderLHand.transform.localPosition;
         originRHand = renderRHand.transform.localPosition;
+        originBarrel = barrel.localPosition;
+
+        currentLHand = originLHand;
+        currentRHand = originRHand;
 
         if (renderGun != null)
             originGun = renderGun.transform.localPosition;
     }
 
-    public void FollowArm(Vector3 origin, Vector3 target) {
-        Vector3 dir = new Vector3(origin.x, 0, origin.y) - new Vector3(target.x, 0, target.y);
-        Debug.Log(dir);
-        o = new Vector3(origin.x, 0, origin.y);
-        Debug.Log(o);
-        p = new Vector3(target.x, 0, target.y);
-        Debug.Log(p);
+    public void SetWeapon(Weapon weapon) {
+        if (weapon == null)
+            return;
 
-        Vector3 d = Quaternion.LookRotation(dir).eulerAngles;
-        Vector3 f = new Vector3(0, 0, d.y);
-        renderRHand.transform.localEulerAngles = f;
+        handed = weapon.handed;
+
+        renderGun.sprite = weapon.sprite;
+
+        originLHand = new Vector3(weapon.LHandOffset.x, weapon.LHandOffset.y, -0.0001f);
+        renderLHand.transform.localPosition = originLHand;
+        originGun = weapon.spriteOffset;
+        originBarrel = weapon.barrelOffset;
     }
 
-    void OnDrawGizmosSelected() {
-        if(renderRHand != null) {
-            Gizmos.DrawLine(transform.position + o, transform.position + p);
+    public void AimGun(Vector3 origin, Vector3 target) {
+        Vector3 dir = origin - target;
+
+        angle = Quaternion.LookRotation(dir.normalized).eulerAngles.y;
+
+        if (handed == Handed.Two) {
+            float rotZ = 1 - zRotCurve.Evaluate(angle / 360.0f);
+            float rotX = 1 - xRotCurveTwo.Evaluate(angle / 360.0f);
+            Vector3 rot = new Vector3(-rotX * 360.0f, 0, rotZ * 360.0f + 90);
+            renderRHand.transform.localEulerAngles = rot;
+
+            float posZ = zPosCurveTwo.Evaluate(1 - (angle / 360.0f));
+            float posX = xPosCurveTwo.Evaluate(1 - (angle / 360.0f));
+            Vector3 pos = new Vector3(posX, 0, posZ);
+            renderRHand.transform.localPosition = currentRHand + pos;
+        } else {
+            float rotZ = 1 - zRotCurve.Evaluate(angle / 360.0f);
+            float rotX = 1 - xRotCurveOne.Evaluate(angle / 360.0f);
+            Vector3 rot = new Vector3(-rotX * 360.0f, 0, rotZ * 360.0f + 90);
+            renderRHand.transform.localEulerAngles = rot;
+
+            float posZ = zPosCurveOne.Evaluate(1 - (angle / 360.0f));
+            float posX = xPosCurveOne.Evaluate(1 - (angle / 360.0f));
+            Vector3 pos = new Vector3(posX, 0, posZ);
+            renderRHand.transform.localPosition = currentRHand + pos;
         }
     }
 
     public void UpdateCharacter(float x, float z) {
-        if(z > 0 && front) {
-            ChangeToBack();
-            front = false;
-        }else if(z <= 0 && !front) {
-            ChangeToFront();
-            front = true;
-        }
+        bool tL = left, tF = front;
 
         if (x > 0 && left) {
             HorizontalFlip(true);
@@ -72,6 +108,17 @@ public class Character : MonoBehaviour {
             HorizontalFlip(false);
             left = true;
         }
+
+        if (z > 0 && front) {
+            ChangeToBack();
+            front = false;
+        }else if(z <= 0 && !front) {
+            ChangeToFront();
+            front = true;
+        }
+
+        if(tL != left || tF != front)
+            ChangeHandPosition();
     }
 
     void HorizontalFlip(bool b) {
@@ -80,12 +127,12 @@ public class Character : MonoBehaviour {
         renderHead.flipX = b;
         renderBody.flipX = b;
 
-        if (renderGun != null) {
-            renderGun.flipX = b;
-            Vector3 v3 = originGun;
-            v3.x = originGun.x * (b ? -1 : 1);
-            renderGun.transform.localPosition = v3;
-        }
+        //renderGun.flipX = b;
+        //renderGun.flipY = b;
+
+        //ChangeHandPosition();
+        //currentLHand = b ? originRHand : originLHand;
+        //currentRHand = b ? originLHand : originRHand;
     }
 
     void ChangeToFront() {
@@ -100,9 +147,9 @@ public class Character : MonoBehaviour {
         renderHead.sprite = info.head.front;
         renderBody.sprite = info.body.front;
 
-        renderLHand.transform.localPosition = originLHand;
+        //renderGun.flipY = false;
 
-        renderRHand.transform.localPosition = originRHand;
+        //ChangeHandPosition();
     }
 
     void ChangeToBack() {
@@ -117,12 +164,31 @@ public class Character : MonoBehaviour {
         renderHead.sprite = info.head.back;
         renderBody.sprite = info.body.back;
 
-        v = originLHand;
-        v.z += 0.02f;
-        renderLHand.transform.localPosition = v;
+        //renderGun.flipY = true;
 
-        v = originRHand;
-        v.z += 0.02f;
+        //ChangeHandPosition();
+    }
+
+    void ChangeHandPosition() {
+        currentLHand = front ? originLHand : originRHand;
+        currentRHand = front ? originRHand : originLHand;
+
+        renderGun.flipY = !left;
+
+        Vector3 v = currentLHand;
+        v.z += front ? 0 : 0.02f;
+        //renderLHand.transform.localPosition = v;
+
+        v = currentRHand;
+        v.z += front ? 0 : 0.02f;
         renderRHand.transform.localPosition = v;
+
+        Vector3 v3 = originGun;
+        v3.y = originGun.y * (renderGun.flipY ? -1 : 1);
+        renderGun.transform.localPosition = v3;
+
+        v3 = originBarrel;
+        v3.y = originBarrel.y * (renderGun.flipY ? -1 : 1);
+        barrel.localPosition = v3;
     }
 }

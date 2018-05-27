@@ -550,6 +550,8 @@ public class LevelGeneration : MonoBehaviour {
         GameObject child = room.gameObject;
         GameObject go = child.transform.GetChild(0).gameObject;
 
+        go.layer = LayerMask.NameToLayer("Room");
+
         RoomData roomdata = room.roomData;
 
         MeshCollider meshCollider = child.AddComponent<MeshCollider>();

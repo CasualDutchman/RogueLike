@@ -34,10 +34,12 @@ public class PlayerMovement : MonoBehaviour {
         Animate(v3.magnitude);
 
         Vector3 mouse = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        mouse = new Vector3(mouse.x, 0, mouse.y);
         Vector3 player = Camera.main.WorldToViewportPoint(transform.position);
-        mouse = mouse - player;
-        character.UpdateCharacter(mouse.x, mouse.y);
-        character.FollowArm(player, mouse);
+        player = new Vector3(player.x, 0, player.y);
+        Vector3 v = mouse - player;
+        character.UpdateCharacter(v.x, v.z);
+        character.AimGun(player, mouse);
     }
 
     void Animate(float magnitude) {

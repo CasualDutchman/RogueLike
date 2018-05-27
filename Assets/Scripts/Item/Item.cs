@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Handed { One_Handed, Two_Handed}
+[CreateAssetMenu(fileName = "Item", menuName = "Item/Item", order = 1)]
+public class Item : ScriptableObject {
 
-public class Item : MonoBehaviour {
-
-    public Handed handed;
     public Sprite sprite;
+    public Vector2 spriteOffset;
 }
