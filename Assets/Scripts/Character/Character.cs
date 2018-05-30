@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    public SpriteRenderer renderHairFront, renderHairBack, renderHead, renderBody, renderLHand, renderRHand, renderGun;
+    public SpriteRenderer renderHairFront, renderHairBack, renderHead, renderFace, renderBody, renderLHand, renderRHand, renderGun;
 
     public Transform barrel;
 
     public CharacterCustom custom;
 
-    public Vector3 originHairFront, originHairBack, originHead, originBody, originLHand, originRHand, originGun, originBarrel;
-    Vector3 currentRHand, currentLHand;
+    public Vector3 originHairFront, originHairBack, originHead, originFace, originBody, originLHand, originRHand, originGun, originBarrel;
+    public Vector3 currentRHand, currentLHand;
 
     public AnimationCurve zRotCurve;
 
@@ -34,16 +34,12 @@ public class Character : MonoBehaviour {
 
     void Start () {
         info = custom.GetRandomCharacter();
-        renderHairFront.sprite = info.hair.front;
-        renderHairBack.sprite = info.hair.back;
-        renderHead.sprite = info.head.front;
-        renderBody.sprite = info.body.front;
-        renderLHand.sprite = info.hand;
-        renderRHand.sprite = info.hand;
+        SetNewCharacter(info);
 
         originHairFront = renderHairFront.transform.localPosition;
         originHairBack = renderHairBack.transform.localPosition;
         originHead = renderHead.transform.localPosition;
+        originFace = renderFace.transform.localPosition;
         originBody = renderBody.transform.localPosition;
         originLHand = renderLHand.transform.localPosition;
         originRHand = renderRHand.transform.localPosition;
@@ -54,6 +50,20 @@ public class Character : MonoBehaviour {
 
         if (renderGun != null)
             originGun = renderGun.transform.localPosition;
+    }
+
+    public void SetNewCharacter(CharacterInfo ci) {
+        renderHairFront.sprite = ci.hair.front;
+        renderHairBack.sprite = ci.hair.back;
+        renderHead.sprite = ci.head;
+        renderFace.sprite = ci.face;
+        renderBody.sprite = ci.body.front;
+        renderLHand.sprite = ci.hand;
+        renderRHand.sprite = ci.hand;
+    }
+
+    public float AngleFromBarrel() {
+        return zRotCurve.Evaluate(angle / 360.0f) * 360.0f;
     }
 
     public void SetWeapon(Weapon weapon) {
@@ -68,6 +78,8 @@ public class Character : MonoBehaviour {
         renderLHand.transform.localPosition = originLHand;
         originGun = weapon.spriteOffset;
         originBarrel = weapon.barrelOffset;
+
+        ChangeHandPosition();
     }
 
     public void AimGun(Vector3 origin, Vector3 target) {
@@ -144,8 +156,9 @@ public class Character : MonoBehaviour {
         v.z = 0.0008f;
         renderHairBack.transform.localPosition = v;
 
-        renderHead.sprite = info.head.front;
         renderBody.sprite = info.body.front;
+
+        renderFace.transform.localPosition = originFace;
 
         //renderGun.flipY = false;
 
@@ -161,8 +174,11 @@ public class Character : MonoBehaviour {
         v.z = -0.0008f;
         renderHairBack.transform.localPosition = v;
 
-        renderHead.sprite = info.head.back;
         renderBody.sprite = info.body.back;
+
+        v = originFace;
+        v.z = -v.z;
+        renderFace.transform.localPosition = v;
 
         //renderGun.flipY = true;
 
@@ -170,17 +186,17 @@ public class Character : MonoBehaviour {
     }
 
     void ChangeHandPosition() {
-        currentLHand = front ? originLHand : originRHand;
-        currentRHand = front ? originRHand : originLHand;
+        //currentLHand = front ? originLHand : originRHand;
+        //currentRHand = front ? originRHand : originLHand;
 
         renderGun.flipY = !left;
 
         Vector3 v = currentLHand;
-        v.z += front ? 0 : 0.02f;
+        v.z += front ? 0 : 0.002f;
         //renderLHand.transform.localPosition = v;
 
         v = currentRHand;
-        v.z += front ? 0 : 0.02f;
+        //v.z += front ? 0 : 0.002f;
         renderRHand.transform.localPosition = v;
 
         Vector3 v3 = originGun;

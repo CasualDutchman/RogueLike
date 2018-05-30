@@ -3,17 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class WeaponInfo {
+    public int currentAmmo;
+    public int maxClipSize;
+    public int ammoInventory;
+}
+
 public class Player : MonoBehaviour, IAttackable {
 
     Character character;
 
-    public float health;
-    public Weapon weapon;
+    public AudioSource audioSource;
 
-    public int currentAmmo;
-    public int maxAmmo;
+    public float health;
+    public int weaponIndex;
+    public Weapon testWeapon1, testWeapon2;
+    Weapon[] holdingWeapons = new Weapon[3];
+    WeaponInfo[] weaponInfo = new WeaponInfo[3];
+
+    Weapon currentWeapon;
+    WeaponInfo currentWeaponInfo;
     public Transform ammoHolder;
-    public Material ammoGrey;
+    public Image uiGun;
+    public Text uiAmmoText;
+
+    public RectTransform crosshair;
 
     bool reloading = false;
 
@@ -21,26 +36,46 @@ public class Player : MonoBehaviour, IAttackable {
 
     public GameObject bulletPrefab;
 
+    public AudioClip hitClip;
+
     float firing;
 
 	void Start () {
         character = GetComponent<Character>();
 
-        SetWeapon(weapon);
+        AddWeapon(testWeapon1);
+        AddWeapon(testWeapon2);
+
+        SetWeapon(0);
     }
 	
 	void Update () {
-        if (Input.GetMouseButton(0) && weapon != null) {
-            if (!weapon.needFullReload)
+        //Cursor.visible = false;
+        //crosshair.anchoredPosition = Input.mousePosition;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            SetWeapon(0);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            SetWeapon(1);
+        }
+
+        if (Input.GetMouseButton(0) && currentWeapon != null) {
+            if (!currentWeapon.needFullReload) {
+                if (reloading) {
+                    uiGun.sprite = currentWeapon.sprite;
+                    character.renderGun.sprite = currentWeapon.sprite;
+                }
                 reloading = false;
+            }
 
             if ((!reloading)) {
-                if (!reloading || weapon.needFullReload)
+                if (!reloading || currentWeapon.needFullReload)
                     if (firing <= 0) {
                         FireWeapon();
                     }
                 firing += Time.deltaTime;
-                if (firing >= 1 / weapon.fireRate) {
+                if (firing >= 1 / currentWeapon.fireRate) {
                     firing = 0;
                 }
             }
@@ -49,29 +84,61 @@ public class Player : MonoBehaviour, IAttackable {
         }
 
         if (Input.GetKeyDown(KeyCode.R)) {
-            reloading = true;
-            StartCoroutine(Reload());
+            if (currentWeaponInfo.currentAmmo < currentWeaponInfo.maxClipSize) {
+                reloading = true;
+                StartCoroutine(Reload());
+            }
+        }
+    }
+
+    public void AddWeapon(Weapon w) {
+        for (int i = 0; i < holdingWeapons.Length; i++) {
+            if(holdingWeapons[i] == null) {
+                holdingWeapons[i] = w;
+                WeaponInfo info = new WeaponInfo();
+                info.maxClipSize = w.maxAmmo;
+                info.currentAmmo = w.maxAmmo;
+                info.ammoInventory = w.maxAmmo * 5;
+                weaponInfo[i] = info;
+                break;
+            }
         }
     }
 
     IEnumerator Reload() {
         float timer = 0;
 
+        uiGun.sprite = currentWeapon.reloadSprite;
+        character.renderGun.sprite = currentWeapon.reloadSprite;
+
         while (reloading) {
             timer += Time.deltaTime;
 
-            float perBullet = weapon.timeTillFullReload / weapon.maxAmmo;
+            float perBullet = currentWeapon.timeTillFullReload / currentWeapon.maxAmmo;
             
             if (timer >= perBullet) {
-                currentAmmo++;
-                ammoHolder.GetChild(maxAmmo - currentAmmo).GetComponent<Image>().material = null;
+                if (currentWeaponInfo.ammoInventory > 0 || currentWeapon.infiniteAmmo) {
+                    currentWeaponInfo.currentAmmo++;
+                    ammoHolder.GetChild(currentWeaponInfo.maxClipSize - currentWeaponInfo.currentAmmo).GetComponent<Image>().sprite = currentWeapon.bulletSpriteUI_On;
 
-                if (currentAmmo >= maxAmmo) {
-                    currentAmmo = maxAmmo;
+                    if (!currentWeapon.infiniteAmmo)
+                        currentWeaponInfo.ammoInventory--;
+
+                    uiAmmoText.text = currentWeaponInfo.currentAmmo + "/" + (currentWeapon.infiniteAmmo ? "<size=30>\u221E</size>" : currentWeaponInfo.ammoInventory.ToString());
+
+                    if (currentWeaponInfo.currentAmmo >= currentWeaponInfo.maxClipSize) {
+                        currentWeaponInfo.maxClipSize = currentWeaponInfo.currentAmmo;
+                        reloading = false;
+                        uiGun.sprite = currentWeapon.sprite;
+                        character.renderGun.sprite = currentWeapon.sprite;
+                    }
+
+                    timer = 0;
+                }else {
                     reloading = false;
+                    uiGun.sprite = currentWeapon.sprite;
+                    character.renderGun.sprite = currentWeapon.sprite;
                 }
-
-                timer = 0;
             }
 
             yield return new WaitForEndOfFrame();
@@ -82,11 +149,15 @@ public class Player : MonoBehaviour, IAttackable {
         health -= f;
     }
 
+    public AudioClip GetHitClip() {
+        return hitClip;
+    }
+
     void FireWeapon() {
-        if (weapon == null)
+        if (currentWeapon == null)
             return;
 
-        if (currentAmmo <= 0)
+        if (currentWeaponInfo.currentAmmo <= 0)
             return;
 
         Vector3 screenPos = Camera.main.WorldToScreenPoint(character.barrel.position);
@@ -95,39 +166,78 @@ public class Player : MonoBehaviour, IAttackable {
         Plane hPlane = new Plane(Vector3.up, Vector3.zero);
         float distance = 0;
         if (hPlane.Raycast(ray, out distance)) {
-            GameObject go = Instantiate(bulletPrefab);
-            go.transform.position = ray.GetPoint(distance) + Vector3.up * 0.2f;
-            Bullet b = go.GetComponent<Bullet>();
-            b.SetBullet(weapon.bulletSprite, character.angle, weapon.bulletSpeed, bulletMask, weapon.damage);
+            if (currentWeapon.shootPattern == ShootPattern.Straight) {
+                SpawnBullet(ray.GetPoint(distance), Random.Range(-currentWeapon.recoilFactor, currentWeapon.recoilFactor));
+            }else if (currentWeapon.shootPattern == ShootPattern.Three) {
+                for (int i = 0; i < 3; i++) {
+                    float baseOffset = Random.Range(-currentWeapon.recoilFactor, currentWeapon.recoilFactor);
+                    float offset = 15;
+                    SpawnBullet(ray.GetPoint(distance), baseOffset + (-offset + i * offset));
+                }
+            } else if (currentWeapon.shootPattern == ShootPattern.Five) {
+                for (int i = 0; i < 5; i++) {
+                    float baseOffset = Random.Range(-currentWeapon.recoilFactor, currentWeapon.recoilFactor);
+                    float offset = 15;
+                    SpawnBullet(ray.GetPoint(distance), baseOffset + (-(offset * 2) + i * offset));
+                }
+            }
 
-            ammoHolder.GetChild(maxAmmo - currentAmmo).GetComponent<Image>().material = ammoGrey;
-            currentAmmo--;
+            ammoHolder.GetChild(currentWeaponInfo.maxClipSize - currentWeaponInfo.currentAmmo).GetComponent<Image>().sprite = currentWeapon.bulletSpriteUI_Off;
+            currentWeaponInfo.currentAmmo--;
+
+            uiAmmoText.text = currentWeaponInfo.currentAmmo + "/" + (currentWeapon.infiniteAmmo ? "<size=30>\u221E</size>" : currentWeaponInfo.ammoInventory.ToString());
+
+            audioSource.pitch = Random.Range(0.95f, 1.05f);
+            audioSource.clip = currentWeapon.weaponShot;
+            audioSource.Play();
         }
     }
 
-    void SetWeapon(Weapon w) {
-        //if (weapon == w)
-        //    return;
+    void SpawnBullet(Vector3 pos, float addedAngle) {
+        GameObject go = Instantiate(bulletPrefab);
+        go.transform.position = pos + Vector3.up * 0.2f;
+        Bullet b = go.GetComponent<Bullet>();
 
-        character.SetWeapon(w);
+        Vector3 mouse = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        mouse = new Vector3(mouse.x, 0, mouse.y);
+
+        float angle = character.AngleFromBarrel();
+        angle += addedAngle;
+
+        b.SetBullet(currentWeapon.bulletSprite, angle, bulletMask, currentWeapon.damage);
+    }
+
+    void SetWeapon(int index) {
+        if (weaponIndex == index)
+            return;
+
+        weaponIndex = index;
+
+        currentWeapon = holdingWeapons[weaponIndex];
+        currentWeaponInfo = weaponInfo[weaponIndex];
+
+        character.SetWeapon(currentWeapon);
 
         reloading = false;
 
-        currentAmmo = weapon.maxAmmo;
-        maxAmmo = weapon.maxAmmo;
-
-        while (ammoHolder.childCount > 0) {
-            Destroy(ammoHolder.GetChild(0));
+        int max = ammoHolder.childCount;
+        for (int i = 0; i < max; i++) {
+            Destroy(ammoHolder.GetChild(i).gameObject);
         }
 
-        for (int i = 0; i < maxAmmo; i++) {
+        print(currentWeaponInfo.maxClipSize);
+
+        for (int i = 0; i < currentWeaponInfo.maxClipSize; i++) {
             GameObject go = new GameObject("bullet UI " + i);
             go.transform.SetParent(ammoHolder);
             Image im = go.AddComponent<Image>();
-            im.sprite = weapon.bulletSpriteUI;
+            im.sprite = currentWeaponInfo.maxClipSize - currentWeaponInfo.currentAmmo <= i ? currentWeapon.bulletSpriteUI_On : currentWeapon.bulletSpriteUI_Off;
             go.GetComponent<RectTransform>().sizeDelta = im.sprite.rect.size * 5;
 
         }
 
+        uiGun.sprite = currentWeapon.sprite;
+        uiGun.rectTransform.sizeDelta = currentWeapon.sprite.rect.size * 4;
+        uiAmmoText.text = currentWeaponInfo.currentAmmo + "/" + (currentWeapon.infiniteAmmo ? "<size=30>\u221E</size>" : currentWeaponInfo.ammoInventory.ToString());
     }
 }

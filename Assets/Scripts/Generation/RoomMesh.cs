@@ -10,6 +10,8 @@ public class RoomMesh : MonoBehaviour {
     public Vector3 _SW, _SE, _NW, _NE;
     public float _size;
 
+    public Vector3 offset;
+
     public bool northEntrance, southEntrance, westEntrance, eastEntrance;
     public bool north, south, west, east;
 
@@ -21,6 +23,30 @@ public class RoomMesh : MonoBehaviour {
     public bool gizmoShapeGrid;
 
     MeshFilter meshFilter;
+
+    void Start() {
+        float away = 12;
+        Vector2 ran = Random.insideUnitCircle;
+        _SW = new Vector3(-away, 0, -away) + new Vector3(ran.x * 5, 0, ran.y * 5);
+        ran = Random.insideUnitCircle;
+        _SE = new Vector3(away, 0, -away) + new Vector3(ran.x * 5, 0, ran.y * 5);
+        ran = Random.insideUnitCircle;
+        _NW = new Vector3(-away, 0, away) + new Vector3(ran.x * 5, 0, ran.y * 5);
+        ran = Random.insideUnitCircle;
+        _NE = new Vector3(away, 0, away) + new Vector3(ran.x * 5, 0, ran.y * 5);
+
+        _SW += offset;
+        _SE += offset;
+        _NW += offset;
+        _NE += offset;
+
+        int random = Random.Range(0, 3);
+        northEntrance = random == 0;
+        eastEntrance = random == 1;
+        westEntrance = random == 2;
+
+        Generate();
+    }
 
     [ContextMenu("Clear")]
     public void Clear() {

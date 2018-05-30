@@ -341,6 +341,8 @@ public class LevelGeneration : MonoBehaviour {
 
                         GameObject go = Instantiate(cat.objects[rng.Next(0, cat.objects.Length)], room.transform.GetChild(0));
 
+                        go.layer = LayerMask.NameToLayer("Room");
+
                         if (cat.positionGridPlace > float.Epsilon) {
                             float point = cat.positionGridPlace;
                             pos3.x = (int)(pos3.x / point + 0.5f) * point;
@@ -361,6 +363,8 @@ public class LevelGeneration : MonoBehaviour {
                                 ObjectCategory cat = themeSettings.gameplayObjects[rng.Next(themeSettings.gameplayObjects.Length)];
 
                                 GameObject go = Instantiate(cat.objects[rng.Next(0, cat.objects.Length)], room.transform.GetChild(0));
+
+                                go.layer = LayerMask.NameToLayer("Room");
 
                                 if (cat.positionGridPlace > float.Epsilon) {
                                     float point = cat.positionGridPlace;

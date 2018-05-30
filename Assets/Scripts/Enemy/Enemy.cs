@@ -18,6 +18,7 @@ public class Enemy : MonoBehaviour, IAttackable {
     bool up = true;
 
     public Weapon weapon;
+    public AudioClip hitClip;
 
     float rotY;
 
@@ -49,6 +50,10 @@ public class Enemy : MonoBehaviour, IAttackable {
 
     public void Damage(float f) {
         health -= f;
+    }
+
+    public AudioClip GetHitClip() {
+        return hitClip;
     }
 
     void Animate(float magnitude) {

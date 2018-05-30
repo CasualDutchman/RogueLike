@@ -25,7 +25,7 @@ public class Room : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        if (!levelManager.disableRoomDespawning) {
+        if (levelManager != null && !levelManager.disableRoomDespawning) {
             transform.GetChild(0).gameObject.SetActive(true);
             activeRoom = true;
         }

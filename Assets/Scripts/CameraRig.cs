@@ -6,10 +6,15 @@ public class CameraRig : MonoBehaviour {
 
     public static CameraRig instance;
 
+    public Transform target;
     public AnimationCurve curve;
 
     void Awake() {
         instance = this;
+    }
+
+    void Update() {
+        transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, 0, target.position.z), Time.deltaTime);
     }
 
     public void SetNewPosition(Vector3 newpos) {
