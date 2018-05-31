@@ -8,17 +8,21 @@ public class CameraRig : MonoBehaviour {
 
     public Transform target;
     public AnimationCurve curve;
+    public float influence;
 
     void Awake() {
         instance = this;
     }
 
     void Update() {
-        transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, 0, target.position.z), Time.deltaTime);
+        Vector3 player = Camera.main.WorldToViewportPoint(target.position);
+        Vector3 mouse = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        Vector3 offset = mouse - player;
+        transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x + offset.x * influence, 0, target.position.z + offset.y * influence), Time.deltaTime * 5f);
     }
 
     public void SetNewPosition(Vector3 newpos) {
-        StartCoroutine(SetPos(newpos));
+        //StartCoroutine(SetPos(newpos));
     }
 
     IEnumerator SetPos(Vector3 newpos) {

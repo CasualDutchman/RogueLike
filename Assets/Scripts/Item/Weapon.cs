@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
 using UnityEditor;
 
 [CustomEditor(typeof(Weapon))]
@@ -146,6 +148,7 @@ public class EditorPerlinSettings : Editor {
         return (Sprite)EditorGUILayout.ObjectField(sprite, typeof(Sprite), false, GUILayout.Width(w), GUILayout.Height(h));
     }
 }
+#endif
 
 public enum Handed { One, Two }
 

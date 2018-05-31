@@ -21,6 +21,11 @@ public class PlayerMovement : MonoBehaviour {
         character = GetComponent<Character>();
     }
 	
+    public void SetCharacter() {
+        string[] data = PlayerPrefs.GetString("CharacterSkin").Split('/');
+        character.SetNewCharacter(character.custom.GetCharacter(int.Parse(data[0]), int.Parse(data[1]), int.Parse(data[2]), int.Parse(data[3]), int.Parse(data[4])));
+    }
+
 	void Update () {
         if (controller.isGrounded) {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));

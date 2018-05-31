@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using UnityEditor;
 using UnityEngine.AI;
+#if UNITY_EDITOR
+using UnityEditor;
 
 [CustomEditor(typeof(LevelGeneration))]
 public class LevelGenerationEditor : Editor {
@@ -43,8 +44,12 @@ public class LevelGenerationEditor : Editor {
         GUILayout.EndHorizontal();
     }
 }
+#endif
 
 public class LevelGeneration : MonoBehaviour {
+
+    public bool useLoadingScreen;
+    public GameObject loadingScreen;
 
     //public Material testMaterial;
     public Transform playerTransform;
@@ -124,6 +129,9 @@ public class LevelGeneration : MonoBehaviour {
 
         prevNode = AddNode(node, Direction.North, false);
 
+        if (useLoadingScreen)
+            loadingScreen.SetActive(true);
+
         StartCoroutine(Generate(spawn));
     }
 
@@ -169,6 +177,7 @@ public class LevelGeneration : MonoBehaviour {
         }
 
         playerTransform.position = spawnNode.worldPosition;
+        playerTransform.GetComponent<PlayerMovement>().SetCharacter();
         cameraRig.position = spawnNode.worldPosition;
 
         if (!spawn) {
@@ -179,6 +188,8 @@ public class LevelGeneration : MonoBehaviour {
 
         sw.Stop();
         Debug.Log("Generated in " + sw.ElapsedMilliseconds + " ms/ " + sw.ElapsedTicks + " ticks");
+
+        loadingScreen.SetActive(false);
 
         if (!spawn) {
             Destroy(this);

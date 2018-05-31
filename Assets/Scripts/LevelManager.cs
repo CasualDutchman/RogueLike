@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour {
 
@@ -62,6 +63,8 @@ public class LevelManager : MonoBehaviour {
     }
 
     void Update () {
-		
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            SceneManager.LoadScene(0);
+        }
 	}
 }

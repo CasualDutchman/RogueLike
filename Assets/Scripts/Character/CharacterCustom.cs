@@ -22,6 +22,18 @@ public class CharacterCustom : ScriptableObject {
 
         return info;
     }
+
+    public CharacterInfo GetCharacter(int h, int he, int f, int b, int ha) {
+        CharacterInfo info = new CharacterInfo();
+
+        info.hair = hairs[h];
+        info.head = heads[he];
+        info.face = faces[f];
+        info.body = bodies[b];
+        info.hand = hands[ha];
+
+        return info;
+    }
 }
 
 public class CharacterInfo {

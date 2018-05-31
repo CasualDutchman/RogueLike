@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    public SpriteRenderer renderHairFront, renderHairBack, renderHead, renderFace, renderBody, renderLHand, renderRHand, renderGun;
+    public SpriteRenderer renderHairFront, renderHead, renderFace, renderBody, renderLHand, renderRHand, renderGun;
 
     public Transform barrel;
 
@@ -32,12 +32,11 @@ public class Character : MonoBehaviour {
 
     public float angle;
 
-    void Start () {
-        info = custom.GetRandomCharacter();
-        SetNewCharacter(info);
+    public bool aimOverride;
 
+    void Start () {
         originHairFront = renderHairFront.transform.localPosition;
-        originHairBack = renderHairBack.transform.localPosition;
+        originHairBack = new Vector3(0, -0.0149f, -0.0008f);
         originHead = renderHead.transform.localPosition;
         originFace = renderFace.transform.localPosition;
         originBody = renderBody.transform.localPosition;
@@ -53,11 +52,11 @@ public class Character : MonoBehaviour {
     }
 
     public void SetNewCharacter(CharacterInfo ci) {
-        renderHairFront.sprite = ci.hair.front;
-        renderHairBack.sprite = ci.hair.back;
+        info = ci;
+        renderHairFront.sprite = front ? ci.hair.front : ci.hair.back;
         renderHead.sprite = ci.head;
         renderFace.sprite = ci.face;
-        renderBody.sprite = ci.body.front;
+        renderBody.sprite = front ? ci.body.front: ci.body.back;
         renderLHand.sprite = ci.hand;
         renderRHand.sprite = ci.hand;
     }
@@ -83,6 +82,9 @@ public class Character : MonoBehaviour {
     }
 
     public void AimGun(Vector3 origin, Vector3 target) {
+        if (aimOverride)
+            return;
+
         Vector3 dir = origin - target;
 
         angle = Quaternion.LookRotation(dir.normalized).eulerAngles.y;
@@ -135,9 +137,9 @@ public class Character : MonoBehaviour {
 
     void HorizontalFlip(bool b) {
         renderHairFront.flipX = b;
-        renderHairBack.flipX = !b;
         renderHead.flipX = b;
         renderBody.flipX = b;
+        renderFace.flipX = b;
 
         //renderGun.flipX = b;
         //renderGun.flipY = b;
@@ -148,13 +150,8 @@ public class Character : MonoBehaviour {
     }
 
     void ChangeToFront() {
-        Vector3 v = originHairFront;
-        v.z = -0.0008f;
-        renderHairFront.transform.localPosition = v;
-
-        v = originHairBack;
-        v.z = 0.0008f;
-        renderHairBack.transform.localPosition = v;
+        renderHairFront.transform.localPosition = originHairFront;
+        renderHairFront.sprite = info.hair.front;
 
         renderBody.sprite = info.body.front;
 
@@ -166,17 +163,12 @@ public class Character : MonoBehaviour {
     }
 
     void ChangeToBack() {
-        Vector3 v = originHairFront;
-        v.z = 0.0008f;
-        renderHairFront.transform.localPosition = v;
-
-        v = originHairBack;
-        v.z = -0.0008f;
-        renderHairBack.transform.localPosition = v;
+        renderHairFront.transform.localPosition = originHairBack;
+        renderHairFront.sprite = info.hair.back;
 
         renderBody.sprite = info.body.back;
 
-        v = originFace;
+        Vector3 v = originFace;
         v.z = -v.z;
         renderFace.transform.localPosition = v;
 
