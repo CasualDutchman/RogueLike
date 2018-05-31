@@ -59,6 +59,8 @@ public class Character : MonoBehaviour {
         renderBody.sprite = front ? ci.body.front: ci.body.back;
         renderLHand.sprite = ci.hand;
         renderRHand.sprite = ci.hand;
+
+        ChangeToFront();
     }
 
     public float AngleFromBarrel() {
@@ -136,7 +138,7 @@ public class Character : MonoBehaviour {
     }
 
     void HorizontalFlip(bool b) {
-        renderHairFront.flipX = b;
+        renderHairFront.flipX = front ? b : !b;
         renderHead.flipX = b;
         renderBody.flipX = b;
         renderFace.flipX = b;
@@ -151,7 +153,9 @@ public class Character : MonoBehaviour {
 
     void ChangeToFront() {
         renderHairFront.transform.localPosition = originHairFront;
-        renderHairFront.sprite = info.hair.front;
+        if(info != null)
+            renderHairFront.sprite = info.hair.front;
+        renderHairFront.flipX = !left;
 
         renderBody.sprite = info.body.front;
 
@@ -164,9 +168,12 @@ public class Character : MonoBehaviour {
 
     void ChangeToBack() {
         renderHairFront.transform.localPosition = originHairBack;
-        renderHairFront.sprite = info.hair.back;
+        if (info != null)
+            renderHairFront.sprite = info.hair.back;
+        renderHairFront.flipX = left;
 
-        renderBody.sprite = info.body.back;
+        if (info != null)
+            renderBody.sprite = info.body.back;
 
         Vector3 v = originFace;
         v.z = -v.z;

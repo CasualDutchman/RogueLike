@@ -26,13 +26,6 @@ public class MenuMain : MonoBehaviour {
         character = playerCharacter.GetComponent<Character>();
 
         indexes = new int[options.Length];
-        indexes[0] = Random.Range(0, character.custom.hairs.Count);
-        indexes[1] = Random.Range(0, character.custom.heads.Count);
-        indexes[2] = Random.Range(0, character.custom.faces.Count);
-        indexes[3] = Random.Range(0, character.custom.bodies.Count);
-        indexes[4] = Random.Range(0, character.custom.hands.Count);
-
-        character.SetNewCharacter(character.custom.GetCharacter(indexes[0], indexes[1], indexes[2], indexes[3], indexes[4]));
 
         if (Time.time < 10) {
             OnstartGame();
@@ -65,11 +58,25 @@ public class MenuMain : MonoBehaviour {
             string[] data = PlayerPrefs.GetString("CharacterSkin").Split('/');
             character.SetNewCharacter(character.custom.GetCharacter(int.Parse(data[0]), int.Parse(data[1]), int.Parse(data[2]), int.Parse(data[3]), int.Parse(data[4])));
 
+            indexes[0] = int.Parse(data[0]);
+            indexes[1] = int.Parse(data[1]);
+            indexes[2] = int.Parse(data[2]);
+            indexes[3] = int.Parse(data[3]);
+            indexes[4] = int.Parse(data[4]);
+
             big.transform.GetChild(0).GetComponent<Text>().text = "Continue";
             small.transform.GetChild(0).GetComponent<Text>().text = "New";
             big.onClick.AddListener(() => Continue());
             small.onClick.AddListener(() => New());
         } else {
+            indexes[0] = Random.Range(0, character.custom.hairs.Count);
+            indexes[1] = Random.Range(0, character.custom.heads.Count);
+            indexes[2] = Random.Range(0, character.custom.faces.Count);
+            indexes[3] = Random.Range(0, character.custom.bodies.Count);
+            indexes[4] = Random.Range(0, character.custom.hands.Count);
+
+            character.SetNewCharacter(character.custom.GetCharacter(indexes[0], indexes[1], indexes[2], indexes[3], indexes[4]));
+
             small.gameObject.SetActive(false);
             big.transform.GetChild(0).GetComponent<Text>().text = "New";
             big.onClick.AddListener(() => New());
@@ -77,6 +84,9 @@ public class MenuMain : MonoBehaviour {
     }
 
     void OnContinuedGame() {
+        string[] data = PlayerPrefs.GetString("CharacterSkin").Split('/');
+        character.SetNewCharacter(character.custom.GetCharacter(int.Parse(data[0]), int.Parse(data[1]), int.Parse(data[2]), int.Parse(data[3]), int.Parse(data[4])));
+
         mainUI.SetActive(false);
         createUI.SetActive(false);
         continueUI.SetActive(true);
@@ -99,7 +109,6 @@ public class MenuMain : MonoBehaviour {
         createUI.SetActive(false);
         continueUI.SetActive(true);
         StartCoroutine(ZoomOut());
-        character.aimOverride = false;
     }
 
     void EnablePlayerWalking() {
@@ -115,12 +124,12 @@ public class MenuMain : MonoBehaviour {
 
         for (int i = 0; i < options.Length; i++) {
             int k = i;
-            options[i].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => minusItem(k));
-            options[i].transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => plusItem(k));
+            options[i].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => MinusItem(k));
+            options[i].transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => PlusItem(k));
         }
     }
 
-    public void plusItem(int i) {
+    public void PlusItem(int i) {
         print(i);
         indexes[i]++;
         switch (i) {
@@ -133,7 +142,7 @@ public class MenuMain : MonoBehaviour {
         character.SetNewCharacter(character.custom.GetCharacter(indexes[0], indexes[1], indexes[2], indexes[3], indexes[4]));
     }
 
-    public void minusItem(int i) {
+    public void MinusItem(int i) {
         indexes[i]--;
         if (indexes[i] < 0) {
 
@@ -170,6 +179,7 @@ public class MenuMain : MonoBehaviour {
             if(timer >= 1) {
                 EnablePlayerWalking();
                 cameraRig.enabled = true;
+                character.aimOverride = false;
             }
 
             yield return new WaitForEndOfFrame();
