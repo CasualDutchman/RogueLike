@@ -13,6 +13,9 @@ public class ThemeSettings : ScriptableObject {
     public Vector2Int roomAmountGameplay;
     [Header("Decoration")]
     public ObjectCategory[] decorateObjects;
+    [Header("Enemy")]
+    public Vector2 randomPerRoom;
+    public GameObject[] enemies;
 
 }
 

@@ -10,7 +10,16 @@ public class Character : MonoBehaviour {
 
     public CharacterCustom custom;
 
-    public Vector3 originHairFront, originHairBack, originHead, originFace, originBody, originLHand, originRHand, originGun, originBarrel;
+    Vector3 originHairFront = new Vector3(0, 0.0156f, -0.0008f);
+    Vector3 originHairBack = new Vector3(0, -0.0149f, -0.0008f);
+    Vector3 originHead = new Vector3(0, 1.223853f, -0.33902f);
+    Vector3 originFace = new Vector3(0, 0, -0.0004f);
+    Vector3 originBody = new Vector3(0, 0.369838f, -0.33467f);
+    Vector3 originLHand = new Vector3(0.25f, 0, -0.0001f);
+    Vector3 originRHand = new Vector3(-0.495f, 0.363f, -0.35f);
+    Vector3 originGun = new Vector3(0.4f, 0.25f, 0);
+    Vector3 originBarrel = new Vector3(1, 0.45f, 0);
+
     public Vector3 currentRHand, currentLHand;
 
     public AnimationCurve zRotCurve;
@@ -35,14 +44,14 @@ public class Character : MonoBehaviour {
     public bool aimOverride;
 
     void Start () {
-        originHairFront = renderHairFront.transform.localPosition;
-        originHairBack = new Vector3(0, -0.0149f, -0.0008f);
-        originHead = renderHead.transform.localPosition;
-        originFace = renderFace.transform.localPosition;
-        originBody = renderBody.transform.localPosition;
-        originLHand = renderLHand.transform.localPosition;
-        originRHand = renderRHand.transform.localPosition;
-        originBarrel = barrel.localPosition;
+        //originHairFront = renderHairFront.transform.localPosition;
+        //originHairBack = new Vector3(0, -0.0149f, -0.0008f);
+        //originHead = renderHead.transform.localPosition;
+        //originFace = renderFace.transform.localPosition;
+        //originBody = renderBody.transform.localPosition;
+        //originLHand = renderLHand.transform.localPosition;
+        //originRHand = renderRHand.transform.localPosition;
+        //originBarrel = barrel.localPosition;
 
         currentLHand = originLHand;
         currentRHand = originRHand;

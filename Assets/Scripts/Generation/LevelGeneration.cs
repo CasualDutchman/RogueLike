@@ -175,6 +175,10 @@ public class LevelGeneration : MonoBehaviour {
             Decorate();
             yield return new WaitForEndOfFrame();
         }
+        if (genStages >= 8) {
+            SpawnEnemies();
+            yield return new WaitForEndOfFrame();
+        }
 
         playerTransform.position = spawnNode.worldPosition;
         playerTransform.GetComponent<PlayerMovement>().SetCharacter();
@@ -548,6 +552,36 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
+    void SpawnEnemies() {
+        foreach (Room room in roomLayout) {
+            if (room.roomData.node == spawnNode || room.roomData.node == endNode)
+                continue;
+
+            if (room.roomData.roomType != RoomType.Room)
+                continue;
+
+            Vector3 insideSW = Vector3.Lerp(room.roomData.SW, room.roomData.NE, 0.2f);
+            Vector3 insideNE = Vector3.Lerp(room.roomData.SW, room.roomData.NE, 0.8f);
+            Vector3 insideSE = Vector3.Lerp(room.roomData.SE, room.roomData.NW, 0.2f);
+            Vector3 insideNW = Vector3.Lerp(room.roomData.SE, room.roomData.NW, 0.8f);
+            Vector3[] insideArr = new Vector3[] { insideSW, insideNE, insideSE, insideNW };
+            int[] arr = new int[] { 0, 2, 2, 1, 1, 3, 3, 0 };
+            int amount = rng.Next((int)themeSettings.randomPerRoom.x, (int)themeSettings.randomPerRoom.y);
+            for (int i = 0; i < amount; i++) {
+                int index1 = rng.Next(0, 4), index2 = rng.Next(0, 4);
+                int perc1 = rng.Next(0, 200), perc2 = rng.Next(0, 200), perc3 = rng.Next(0, 200);
+                Vector3 pos1 = Vector3.Lerp(insideArr[arr[index1 * 2]], insideArr[arr[(index1 * 2) + 1]], perc1 * 0.005f);
+                Vector3 pos2 = Vector3.Lerp(insideArr[arr[index2 * 2]], insideArr[arr[(index2 * 2) + 1]], perc2 * 0.005f);
+                Vector3 pos3 = Vector3.Lerp(pos1, pos2, perc3 * 0.005f);
+
+                GameObject go = Instantiate(themeSettings.enemies[Random.Range(0, themeSettings.enemies.Length)], room.transform.GetChild(0));
+                go.transform.position = pos3;
+                go.GetComponent<Enemy>().target = playerTransform;
+                //go.SetActive(false);
+            }
+        }
+    }
+
     void SpawnStencilRoom(Room room) {
         GameObject go = new GameObject("Stencil");
         go.transform.parent = room.transform.GetChild(0);
@@ -563,7 +597,9 @@ public class LevelGeneration : MonoBehaviour {
 
     void SpawnRoom(Room room) {
         GameObject child = room.gameObject;
+        
         GameObject go = child.transform.GetChild(0).gameObject;
+        //go.SetActive(false);
 
         go.layer = LayerMask.NameToLayer("Room");
 
