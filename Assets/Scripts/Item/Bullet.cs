@@ -5,18 +5,16 @@ using UnityEngine;
 public class Bullet : MonoBehaviour {
 
     LayerMask hitMask;
-    float damage;
 
     float timerAlive;
 
     public AudioClip hitSound;
     public GameObject audioPrefab;
 
-	public void SetBullet(Sprite bulletSprite, float angle, LayerMask mask, float d) {
+	public void SetBullet(Sprite bulletSprite, float angle, LayerMask mask) {
         GetComponent<SpriteRenderer>().sprite = bulletSprite;
         transform.localEulerAngles = new Vector3(90, angle + 180, 0);
         hitMask = mask;
-        damage = d;
     }
 	
 	void Update () {
@@ -34,9 +32,11 @@ public class Bullet : MonoBehaviour {
             go.transform.position = transform.position;
             AudioSource source = go.GetComponent<AudioSource>();
 
+            bool remove = true;
             if (hit.collider.GetComponent<IAttackable>() != null) {
                 IAttackable att = hit.collider.GetComponent<IAttackable>();
-                att.Damage(damage);
+                Debug.Log(hit.collider.name);
+                att.Damage(1);
                 source.clip = att.GetHitClip();
             }else {
                 source.clip = hitSound;
@@ -45,8 +45,10 @@ public class Bullet : MonoBehaviour {
             source.pitch = Random.Range(0.95f, 1.05f);
             source.volume = Random.Range(0.1f, 0.2f);
 
-            source.Play();
-            Destroy(gameObject);
+            if (remove) {
+                source.Play();
+                Destroy(gameObject);
+            }
         }
     }
 }

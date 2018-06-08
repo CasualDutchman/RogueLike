@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 1a84efb62fe0a774eb01546244f026d6
-timeCreated: 1527545916
+timeCreated: 1528381684
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -21,6 +21,7 @@ TextureImporter:
     21300028: Arrow_1
     21300030: Arrow_2
     21300032: Back
+    21300034: Coin
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -321,6 +322,20 @@ TextureImporter:
         y: 23
         width: 10
         height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Coin
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 16
+        width: 7
+        height: 9
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

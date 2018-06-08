@@ -16,7 +16,7 @@ public class Player : MonoBehaviour, IAttackable {
 
     public AudioSource audioSource;
 
-    public float health;
+    public int health;
     public int weaponIndex;
     public Weapon testWeapon1, testWeapon2;
     Weapon[] holdingWeapons = new Weapon[3];
@@ -38,7 +38,13 @@ public class Player : MonoBehaviour, IAttackable {
 
     public AudioClip hitClip;
 
+    public Sprite heartFull, heartHalf, heartEmpty;
+    public Image[] hearts;
+
     float firing;
+
+    bool invincible = false;
+    float invincibleTimer;
 
 	void Start () {
         character = GetComponent<Character>();
@@ -87,6 +93,14 @@ public class Player : MonoBehaviour, IAttackable {
             if (currentWeaponInfo.currentAmmo < currentWeaponInfo.maxClipSize) {
                 reloading = true;
                 StartCoroutine(Reload());
+            }
+        }
+
+        if (invincible) {
+            invincibleTimer += Time.deltaTime;
+            if (invincibleTimer >= 1.2f) {
+                invincibleTimer = 0;
+                invincible = false;
             }
         }
     }
@@ -145,8 +159,36 @@ public class Player : MonoBehaviour, IAttackable {
         }
     }
 
-    public void Damage(float f) {
+    [ContextMenu("Damage")]
+    public void Dam() {
+        Damage(1);
+    }
+
+    public bool Damage(int f) {
+        if (invincible)
+            return false;
+
         health -= f;
+        UpdateHearts();
+
+        invincible = true;
+        return true;
+    }
+
+    void UpdateHearts() {
+        for (int i = 0; i < hearts.Length; i++) {
+            if (i > Mathf.FloorToInt(health / 2f) - 1) {
+                if ((float)i > (health / 2f) - 0.5f) {
+                    hearts[i].sprite = heartEmpty;
+                } else {
+                    hearts[i].sprite = heartHalf;
+                }
+            } 
+            else
+            {
+                hearts[i].sprite = heartFull;
+            }
+        }
     }
 
     public AudioClip GetHitClip() {
@@ -204,7 +246,7 @@ public class Player : MonoBehaviour, IAttackable {
         float angle = character.AngleFromBarrel();
         angle += addedAngle;
 
-        b.SetBullet(currentWeapon.bulletSprite, angle, bulletMask, currentWeapon.damage);
+        b.SetBullet(currentWeapon.bulletSprite, angle, bulletMask);
     }
 
     void SetWeapon(int index) {
@@ -224,8 +266,6 @@ public class Player : MonoBehaviour, IAttackable {
         for (int i = 0; i < max; i++) {
             Destroy(ammoHolder.GetChild(i).gameObject);
         }
-
-        print(currentWeaponInfo.maxClipSize);
 
         for (int i = 0; i < currentWeaponInfo.maxClipSize; i++) {
             GameObject go = new GameObject("bullet UI " + i);

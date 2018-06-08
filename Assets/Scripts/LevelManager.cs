@@ -10,8 +10,12 @@ public class LevelManager : MonoBehaviour {
 
     LevelGeneration levelGenerator;
 
+    public Transform player;
+
     public LevelSettings easyLevelSettings;
     public LevelSettings customLevelSettings;
+
+    public ThemeSettings theme;
 
     public bool disableRoomDespawning;
     public bool usePlayerPref;
@@ -54,7 +58,7 @@ public class LevelManager : MonoBehaviour {
         levelGenerator.genStages = 100;
         levelGenerator.ClearLevel();
 
-        levelGenerator.GenerateLevel(usePlayerPref && hasCustomSettings ? customLevelSettings : easyLevelSettings, disableRoomDespawning);
+        levelGenerator.GenerateLevel(usePlayerPref && hasCustomSettings ? customLevelSettings : easyLevelSettings, theme, disableRoomDespawning);
 
     }
 

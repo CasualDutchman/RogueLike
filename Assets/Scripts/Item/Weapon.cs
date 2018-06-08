@@ -34,7 +34,6 @@ public class EditorPerlinSettings : Editor {
         GUILayout.Label("Fire Info", EditorStyles.boldLabel);
 
         weapon.fireRate = EditorGUILayout.FloatField("Rate of Fire", weapon.fireRate);
-        weapon.damage = EditorGUILayout.FloatField("Damage per bullet", weapon.damage);
         weapon.shootPattern = (ShootPattern)EditorGUI.EnumPopup(EditorGUILayout.GetControlRect(), "Shoot Pattern", weapon.shootPattern);
         weapon.recoilFactor = EditorGUILayout.FloatField("Recoild factor", weapon.recoilFactor);
 
@@ -158,7 +157,6 @@ public enum ShootPattern { Straight, Three, Five, Random, Through}
 public class Weapon : Item {
 
     public float fireRate;
-    public float damage;
     public Handed handed;
 
     public ShootPattern shootPattern;

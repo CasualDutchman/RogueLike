@@ -6,7 +6,7 @@ using UnityEngine;
 public class ThemeSettings : ScriptableObject {
 
     public Material roomMaterial;
-    public GameObject doorObject;
+    public GameObject doorObject, doorClosedObject;
     public GameObject fogObject;
     [Header("Gameplay")]
     public ObjectCategory[] gameplayObjects;

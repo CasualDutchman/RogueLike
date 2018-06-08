@@ -4,47 +4,6 @@ using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using UnityEngine.AI;
-#if UNITY_EDITOR
-using UnityEditor;
-
-[CustomEditor(typeof(LevelGeneration))]
-public class LevelGenerationEditor : Editor {
-
-    LevelGeneration gen;
-
-    private void OnEnable() {
-        gen = (LevelGeneration)target;
-    }
-
-    public override void OnInspectorGUI() {
-        DrawDefaultInspector();
-
-        GUILayout.BeginHorizontal();
-
-        if (GUILayout.Button("Generate")) {
-            gen.ClearLevel();
-            gen.GenerateLevel(gen.settings, true);
-            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
-        }
-
-        if (GUILayout.Button("+Stage")) {
-            gen.genStages += 1;
-            gen.ClearLevel();
-            gen.GenerateLevel(gen.settings, true);
-            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
-        }
-
-        if (GUILayout.Button("Random Gen")) {
-            //gen.settings.seed = Random.Range(int.MinValue, int.MaxValue);
-            gen.ClearLevel();
-            gen.GenerateLevel(gen.settings, true);
-            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
-        }
-
-        GUILayout.EndHorizontal();
-    }
-}
-#endif
 
 public class LevelGeneration : MonoBehaviour {
 
@@ -59,7 +18,7 @@ public class LevelGeneration : MonoBehaviour {
     //public GameObject[] gameplayObjects;
     //public GameObject[] decorationObjects;
 
-    public ThemeSettings themeSettings;
+    ThemeSettings themeSettings;
 
     public LevelManager levelManager;
 
@@ -118,7 +77,9 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
-    public void GenerateLevel(LevelSettings lvlset, bool spawn) {
+    public void GenerateLevel(LevelSettings lvlset, ThemeSettings theme, bool spawn) {
+        themeSettings = theme;
+
         settings = lvlset;
         seed = lvlset.seed;
         rng = new System.Random(seed);
@@ -320,6 +281,7 @@ public class LevelGeneration : MonoBehaviour {
             Room room = child.AddComponent<Room>();
             room.roomData = roomData;
             room.endRoom = endNode == node;
+            room.spawnRoom = spawnNode == node;
 
             roomLayout.Add(room);
 
@@ -574,9 +536,11 @@ public class LevelGeneration : MonoBehaviour {
                 Vector3 pos2 = Vector3.Lerp(insideArr[arr[index2 * 2]], insideArr[arr[(index2 * 2) + 1]], perc2 * 0.005f);
                 Vector3 pos3 = Vector3.Lerp(pos1, pos2, perc3 * 0.005f);
 
-                GameObject go = Instantiate(themeSettings.enemies[Random.Range(0, themeSettings.enemies.Length)], room.transform.GetChild(0));
-                go.transform.position = pos3;
-                go.GetComponent<Enemy>().target = playerTransform;
+                room.roomData.enemyPositions.Add(pos3);
+
+                //GameObject go = Instantiate(themeSettings.enemies[Random.Range(0, themeSettings.enemies.Length)], room.transform.GetChild(0));
+                //go.transform.position = pos3;
+                //go.GetComponent<Enemy>().target = playerTransform;
                 //go.SetActive(false);
             }
         }
@@ -858,6 +822,8 @@ public class RoomData {
 
     public Dictionary<Vector3, float> doorLocations = new Dictionary<Vector3, float>();
     public List<Part> parts = new List<Part>();
+
+    public List<Vector3> enemyPositions = new List<Vector3>();
 
     public bool hasNorth = true;
     public bool hasWest = true;

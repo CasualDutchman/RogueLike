@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour, IAttackable {
 
     public Transform target;
 
-    public float health;
+    public int health;
 
     public float distanceFromPlayer;
     EnemyState enemyState = EnemyState.Chase;
@@ -167,14 +167,16 @@ public class Enemy : MonoBehaviour, IAttackable {
         float angle = character.AngleFromBarrel();
         angle += addedAngle;
 
-        b.SetBullet(weapon.bulletSprite, angle, bulletMask, weapon.damage);
+        b.SetBullet(weapon.bulletSprite, angle, bulletMask);
     }
 
-    public void Damage(float f) {
+    public bool Damage(int f) {
         health -= f;
         if (health <= 0) {
             Destroy(gameObject);
         }
+
+        return true;
     }
 
     public AudioClip GetHitClip() {
