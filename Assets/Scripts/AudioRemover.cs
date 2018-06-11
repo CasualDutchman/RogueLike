@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//remove the AudioSource GameObject when the audio is done playing
 public class AudioRemover : MonoBehaviour {
 
     AudioSource source;

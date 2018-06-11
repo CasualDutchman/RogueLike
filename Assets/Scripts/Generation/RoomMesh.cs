@@ -24,6 +24,7 @@ public class RoomMesh : MonoBehaviour {
 
     MeshFilter meshFilter;
 
+    //Start for testing
     void Start() {
         float away = 12;
         Vector2 ran = Random.insideUnitCircle;
@@ -48,11 +49,13 @@ public class RoomMesh : MonoBehaviour {
         Generate();
     }
 
+    //clear for testing
     [ContextMenu("Clear")]
     public void Clear() {
         meshFilter.mesh = null;
     }
 
+    //generate for testing
     [ContextMenu("Generate")]
     public void Generate() {
         List<Vector3> verts = new List<Vector3>();
@@ -76,6 +79,7 @@ public class RoomMesh : MonoBehaviour {
 
     int amount = 0;
 
+    //generate a mesh for hte given lists
     public static void GenerateMesh(Vector3 SW, Vector3 SE, Vector3 NW, Vector3 NE, WallData wall, float wallH, float doorH, float doorW, float size, List<Vector3> verts, List<Vector2> uvs, List<int> tris) {
 
         List<Vector3> inShape = new List<Vector3>();
@@ -104,6 +108,7 @@ public class RoomMesh : MonoBehaviour {
     }
 
     #region Spawning
+    //Add a wall piece to the lists
     static void AddWall(Vector3 v1, Vector3 v2, bool entrance, float size, float wallH, float doorH, float doorW, List<Vector3> verts, List<int> tris, List<Vector2> uvs) {
         float dis = Vector3.Distance(v1, v2);
         float disScale = dis / size;
@@ -168,6 +173,7 @@ public class RoomMesh : MonoBehaviour {
         }
     }
 
+    //Make a quad for the list from the given vectors
     static void GetQuad(List<Vector3> inShape, float size, int x, int y, List<Vector3> verts, List<int> tris, List<Vector2> uvs) {
         Vector3[] v3Array = GetSquareData(inShape, size, x, y);
 
@@ -188,6 +194,7 @@ public class RoomMesh : MonoBehaviour {
         }
     }
 
+    //make a correct triangle from the given parameters
     static MeshData GetTriangle(Vector3 p1, Vector3 p2, Vector3 p3, float size, float originX, float originY) {
         int[] iArr = new int[3];
 
@@ -234,6 +241,7 @@ public class RoomMesh : MonoBehaviour {
     #endregion
 
     #region generation
+    //Generate all of the vector3s for the ground
     static  void GeneratePoints(List<Vector3> inShape, WallData wall, Vector3 SW, Vector3 SE, Vector3 NW, Vector3 NE, float s, out float minX, out float maxX, out float minY, out float maxY) {
         inShape.Add(SW);
         inShape.Add(SE);
@@ -306,6 +314,7 @@ public class RoomMesh : MonoBehaviour {
         }    
     }
 
+    //Check where lines meet
     //used http://www.habrador.com/tutorials/math/5-line-line-intersection/
     static Vector2 GetPoint(Vector3 l1, Vector3 l2, float minX, float maxX, float minY, float maxY) {
         Vector2 l1_start = new Vector2(l1.x, l1.z);
@@ -339,6 +348,7 @@ public class RoomMesh : MonoBehaviour {
         return new Vector2(x_intersect, y_intersect);
     }
 
+    //return true if the first vector is in the given triangle
     static bool PointInTriangle(Vector2 pt, Vector2 v1, Vector2 v2, Vector2 v3) {
         bool b1, b2, b3;
 
@@ -354,6 +364,7 @@ public class RoomMesh : MonoBehaviour {
     }
     #endregion
 
+    //visialuzation
     private void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
         if (gizmoPoints) {
@@ -379,6 +390,9 @@ public class RoomMesh : MonoBehaviour {
     }
 }
 
+//class to hold data for wall
+//if it has wall, by direction
+//if it has entrance, by direction
 public class WallData {
     public bool hasNorth;
     public bool hasWest;
@@ -417,9 +431,9 @@ public struct MeshData {
     }
 }
 
+//Used to sort the list into a list of the same vector3s, but in a clockwise fasion
 //from: https://pastebin.com/1RkaP28U
 //from: https://answers.unity.com/questions/877169/vector2-array-sort-clockwise.html
-//
 public class ClockwiseComparer : IComparer<Vector3> {
     private Vector3 m_Origin;
 

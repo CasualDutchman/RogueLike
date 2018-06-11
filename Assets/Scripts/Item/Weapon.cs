@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(Weapon))]
-public class EditorPerlinSettings : Editor {
+public class EditorWeapon : Editor {
 
     Weapon weapon;
 
@@ -22,7 +22,9 @@ public class EditorPerlinSettings : Editor {
 
     public override void OnInspectorGUI() {
         EditorGUI.BeginChangeCheck();
-        Gui();
+
+        Gui();//put in change method for looking when the offsets change // could be done differently
+
         if (EditorGUI.EndChangeCheck()) {
             EditorUtility.SetDirty(weapon);
         }
@@ -125,6 +127,7 @@ public class EditorPerlinSettings : Editor {
         return result;
     }
 
+    //get a single color Texture2d
     Texture2D GetColoredTexture(int size, Color col) {
         Texture2D tex = new Texture2D(size, size);
         Color[] colors = new Color[size * size];
@@ -137,6 +140,7 @@ public class EditorPerlinSettings : Editor {
         return tex;
     }
 
+    //DIsplay a bigger sprite-selection-box
     Sprite BigSelection(Sprite sprite) {
         float w = sprite == null ? 80 : sprite.rect.width * 6;
         float h = sprite == null ? 80 : sprite.rect.height * 6;
@@ -153,6 +157,7 @@ public enum Handed { One, Two }
 
 public enum ShootPattern { Straight, Three, Five, Random, Through}
 
+//hold information need for weapons, rate of fire, ammo count, etc
 [CreateAssetMenu(fileName = "Weapon", menuName = "Item/Weapon", order = 1)]
 public class Weapon : Item {
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//keep the child rotated to the parent
 public class SpriteRotator : MonoBehaviour {
 	
 	void Update () {

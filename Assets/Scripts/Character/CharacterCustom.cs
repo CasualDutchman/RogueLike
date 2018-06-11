@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//contains all the possible sprites a character can use
 [CreateAssetMenu(fileName = "CharacterCustom", menuName = "Settings/CharacterSettings", order = 1)]
 public class CharacterCustom : ScriptableObject {
 
@@ -36,11 +37,13 @@ public class CharacterCustom : ScriptableObject {
     }
 }
 
+//info for 1 character, 1 sprite per part
 public class CharacterInfo {
     public FrontBack hair, body;
     public Sprite hand, head, face;
 }
 
+//used if a sprite changes when looking front or back
 [System.Serializable]
 public class FrontBack {
     public Sprite front, back;

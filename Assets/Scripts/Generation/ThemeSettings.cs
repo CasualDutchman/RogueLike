@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//contains information about the theme of a dungeon
+//can change for indoor mansion, to library, to caves, etc
 [CreateAssetMenu(fileName = "ThemeSettings", menuName = "Settings/ThemeSettings", order = 1)]
 public class ThemeSettings : ScriptableObject {
 
@@ -16,11 +18,12 @@ public class ThemeSettings : ScriptableObject {
     [Header("Enemy")]
     public Vector2 randomPerRoom;
     public GameObject[] enemies;
-
 }
 
 public enum Place { Ground, Wall }
 
+//information about a category of items
+//different crates can use the same placement method, but different models
 [System.Serializable]
 public class ObjectCategory {
     public GameObject[] objects;

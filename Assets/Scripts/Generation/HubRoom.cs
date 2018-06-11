@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
+//spawn the hub room
 public class HubRoom : MonoBehaviour {
 
     public ThemeSettings themeSettings;
@@ -61,6 +62,7 @@ public class HubRoom : MonoBehaviour {
         Debug.Log("Generated in " + sw.ElapsedMilliseconds + " ms/ " + sw.ElapsedTicks + " ticks");
     }
 
+    //generate info to spawn a room
     void GenerateRooms() {
         Node node = new Node(0, 0);
         node.room = true;
@@ -79,6 +81,7 @@ public class HubRoom : MonoBehaviour {
         go.transform.parent = child.transform;
     }
 
+    //spawn the mesh for the room
     void SpawnRoom() {
         GameObject child = room.gameObject;
         GameObject go = child.transform.GetChild(0).gameObject;
@@ -122,6 +125,7 @@ public class HubRoom : MonoBehaviour {
         meshCollider.sharedMesh = mesh;
     }
 
+    //add the mesh used by the stencil shader
     void SpawnStencilRoom() {
         GameObject go = new GameObject("Stencil");
         go.transform.parent = room.transform.GetChild(0);
@@ -135,10 +139,13 @@ public class HubRoom : MonoBehaviour {
         render.material = stencilMaterial;
     }
 
+    //can contain shops items, etc
+    //wip
     void SpawnGameplay() {
 
     }
 
+    //to decorate the room
     void Decorate() {
         SpawnDoors();
         SpawnDecoration();

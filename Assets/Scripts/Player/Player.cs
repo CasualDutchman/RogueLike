@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//this class keeps track of the individual weapon-ammo
+//when a player switched weapon, this keeps track of the ammo count
 [System.Serializable]
 public class WeaponInfo {
     public int currentAmmo;
@@ -105,6 +107,8 @@ public class Player : MonoBehaviour, IAttackable {
         }
     }
 
+    //used for when picking up weapon
+    //not used, only for testing
     public void AddWeapon(Weapon w) {
         for (int i = 0; i < holdingWeapons.Length; i++) {
             if(holdingWeapons[i] == null) {
@@ -119,6 +123,7 @@ public class Player : MonoBehaviour, IAttackable {
         }
     }
 
+    //when reloading
     IEnumerator Reload() {
         float timer = 0;
 
@@ -159,11 +164,6 @@ public class Player : MonoBehaviour, IAttackable {
         }
     }
 
-    [ContextMenu("Damage")]
-    public void Dam() {
-        Damage(1);
-    }
-
     public bool Damage(int f) {
         if (invincible)
             return false;
@@ -195,6 +195,7 @@ public class Player : MonoBehaviour, IAttackable {
         return hitClip;
     }
 
+    //when firing a weapon
     void FireWeapon() {
         if (currentWeapon == null)
             return;
@@ -235,6 +236,7 @@ public class Player : MonoBehaviour, IAttackable {
         }
     }
 
+    //spawning a bullet
     void SpawnBullet(Vector3 pos, float addedAngle) {
         GameObject go = Instantiate(bulletPrefab);
         go.transform.position = pos + Vector3.up * 0.2f;
@@ -249,6 +251,7 @@ public class Player : MonoBehaviour, IAttackable {
         b.SetBullet(currentWeapon.bulletSprite, angle, bulletMask);
     }
 
+    //when changing weapon, set new information, change ui etc
     void SetWeapon(int index) {
         if (weaponIndex == index)
             return;

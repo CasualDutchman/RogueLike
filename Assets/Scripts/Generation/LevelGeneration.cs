@@ -96,6 +96,7 @@ public class LevelGeneration : MonoBehaviour {
         StartCoroutine(Generate(spawn));
     }
 
+    //using coroutine for wait contol. no waiting for a single frame
     IEnumerator Generate(bool spawn) {
         Stopwatch sw = new Stopwatch();
         sw.Start();
@@ -161,6 +162,7 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
+    //generate information for the single main path
     void GenerateMainRoad() {
         int mainRoadMax = rng.Next(settings.mainRoadLengthMin, settings.mainRoadLengthMax);
         for (int i = 0; i <= mainRoadMax; i++) {
@@ -182,6 +184,7 @@ public class LevelGeneration : MonoBehaviour {
         mainRoadSize = nodeArray.Count;
     }
 
+    //generate information for the branched off the main path
     void GenerateBranchNodes() {
         for (int b = 0; b < settings.maxBranchOut; b++) {
             int max = nodeArray.Count - 2;
@@ -201,6 +204,7 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
+    //generate information for the offsets of the nodes
     void GenerateOffsets() {
         int minX = int.MaxValue;
         int maxX = int.MinValue;
@@ -257,6 +261,7 @@ public class LevelGeneration : MonoBehaviour {
         
     }
 
+    //generate information for the rooms
     void GenerateRooms() {
         for (int i = 0; i < mainRoadSize; i++) {
             nodeArray[i].room = i % 2 == 0 || i == mainRoadSize - 1 || i == 0 || rng.Next(10) > 7;
@@ -293,6 +298,7 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
+    //add collidable objects
     void SpawnGameplay() {
         foreach (Room room in roomLayout) {
             if (room.roomData.node == spawnNode || room.roomData.node == endNode)
@@ -370,6 +376,7 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
+    //add decorative objects, non collidable
     void Decorate() {
         SpawnDoors();
         SpawnDecoration();
@@ -514,6 +521,7 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
+    //generate information for spawning enemies
     void SpawnEnemies() {
         foreach (Room room in roomLayout) {
             if (room.roomData.node == spawnNode || room.roomData.node == endNode)
@@ -546,6 +554,7 @@ public class LevelGeneration : MonoBehaviour {
         }
     }
 
+    //spawn mesh to use for stencil shader
     void SpawnStencilRoom(Room room) {
         GameObject go = new GameObject("Stencil");
         go.transform.parent = room.transform.GetChild(0);
@@ -559,6 +568,7 @@ public class LevelGeneration : MonoBehaviour {
         render.material = stencilMaterial;
     }
 
+    //spawn the mesh of the room
     void SpawnRoom(Room room) {
         GameObject child = room.gameObject;
         
@@ -604,6 +614,7 @@ public class LevelGeneration : MonoBehaviour {
         meshCollider.sharedMesh = mesh;
     }
 
+    //get mesh used for the room trigger
     Mesh GetCollision(RoomData room) {
         List<Vector3> verts = new List<Vector3>();
         List<int> tris = new List<int>();
@@ -650,6 +661,7 @@ public class LevelGeneration : MonoBehaviour {
         return mesh;
     }
 
+    //check if can branch to a direction
     bool GetAvailableDirection(Node node, out Direction dir, bool plusSouth = false) {
         List<Direction> avail = new List<Direction>(node.GetAvailableDirections(plusSouth));
 
@@ -764,6 +776,7 @@ public class LevelGeneration : MonoBehaviour {
 
 public enum Direction { North, East, South, West }
 
+//contains all of the information in the beginning
 [System.Serializable]
 public class Node {
     public int posX;
@@ -813,6 +826,7 @@ public class Node {
 
 public enum RoomType { Hallway, Room }
 
+//contains all of the information before spawning
 [System.Serializable]
 public class RoomData {
     public Vector3 SW, SE, NW, NE;
@@ -1107,6 +1121,8 @@ public class RoomData {
     }
 }
 
+//big room has a single part with information
+//corridor has 5 pars with information
 public struct Part {
     public Vector3 SW, SE, NW, NE;
     public bool hasNorth;

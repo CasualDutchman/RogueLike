@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//contains information about a level
+//can change based on difficulty
 [CreateAssetMenu(fileName = "LevelSettings", menuName = "Settings/LevelSettings", order = 1)]
 public class LevelSettings : ScriptableObject {
 

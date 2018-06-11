@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//changed the intensity of a light in a random way
 public class Flicker : MonoBehaviour {
 
     public Light lightbase;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//contain all of the SpriteRenderer for a customizable character
 public class Character : MonoBehaviour {
 
     public SpriteRenderer renderHairFront, renderHead, renderFace, renderBody, renderLHand, renderRHand, renderGun;
@@ -60,6 +61,7 @@ public class Character : MonoBehaviour {
             originGun = renderGun.transform.localPosition;
     }
 
+    //change the character to the info
     public void SetNewCharacter(CharacterInfo ci) {
         info = ci;
         renderHairFront.sprite = front ? ci.hair.front : ci.hair.back;
@@ -72,10 +74,12 @@ public class Character : MonoBehaviour {
         ChangeToFront();
     }
 
+    //get the angle the barrel aims at
     public float AngleFromBarrel() {
         return zRotCurve.Evaluate(angle / 360.0f) * 360.0f;
     }
 
+    //set new weapon, used to change the hand positions
     public void SetWeapon(Weapon weapon) {
         if (weapon == null)
             return;
@@ -92,6 +96,7 @@ public class Character : MonoBehaviour {
         ChangeHandPosition();
     }
 
+    //aim the gun to the given target
     public void AimGun(Vector3 origin, Vector3 target) {
         if (aimOverride)
             return;
@@ -123,6 +128,7 @@ public class Character : MonoBehaviour {
         }
     }
 
+    //update the character for facing left, right, front, back
     public void UpdateCharacter(float x, float z) {
         bool tL = left, tF = front;
 
@@ -146,20 +152,15 @@ public class Character : MonoBehaviour {
             ChangeHandPosition();
     }
 
+    //called when the aim changes from left to right, and the other way around
     void HorizontalFlip(bool b) {
         renderHairFront.flipX = front ? b : !b;
         renderHead.flipX = b;
         renderBody.flipX = b;
         renderFace.flipX = b;
-
-        //renderGun.flipX = b;
-        //renderGun.flipY = b;
-
-        //ChangeHandPosition();
-        //currentLHand = b ? originRHand : originLHand;
-        //currentRHand = b ? originLHand : originRHand;
     }
 
+    //called when the aim changed to front
     void ChangeToFront() {
         renderHairFront.transform.localPosition = originHairFront;
         if(info != null)
@@ -169,12 +170,9 @@ public class Character : MonoBehaviour {
         renderBody.sprite = info.body.front;
 
         renderFace.transform.localPosition = originFace;
-
-        //renderGun.flipY = false;
-
-        //ChangeHandPosition();
     }
 
+    //called when the aim changed to the back
     void ChangeToBack() {
         renderHairFront.transform.localPosition = originHairBack;
         if (info != null)
@@ -187,24 +185,14 @@ public class Character : MonoBehaviour {
         Vector3 v = originFace;
         v.z = -v.z;
         renderFace.transform.localPosition = v;
-
-        //renderGun.flipY = true;
-
-        //ChangeHandPosition();
     }
 
+    //change the hand positin
     void ChangeHandPosition() {
-        //currentLHand = front ? originLHand : originRHand;
-        //currentRHand = front ? originRHand : originLHand;
 
         renderGun.flipY = !left;
 
-        Vector3 v = currentLHand;
-        v.z += front ? 0 : 0.002f;
-        //renderLHand.transform.localPosition = v;
-
-        v = currentRHand;
-        //v.z += front ? 0 : 0.002f;
+        Vector3 v = currentRHand;
         renderRHand.transform.localPosition = v;
 
         Vector3 v3 = originGun;

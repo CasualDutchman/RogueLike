@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour {
         character = GetComponent<Character>();
     }
 	
+    //change the attached character to the saved outfit
     public void SetCharacter() {
         string[] data = PlayerPrefs.GetString("CharacterSkin").Split('/');
         character.SetNewCharacter(character.custom.GetCharacter(int.Parse(data[0]), int.Parse(data[1]), int.Parse(data[2]), int.Parse(data[3]), int.Parse(data[4])));
@@ -47,6 +48,7 @@ public class PlayerMovement : MonoBehaviour {
         character.AimGun(player, mouse);
     }
 
+    //add wobble when walking
     void Animate(float magnitude) {
         timer += Time.deltaTime * (magnitude > float.Epsilon ? (up ? magnitude : -magnitude) : (up ? idleRate : -idleRate));
         if (timer >= 1) {
@@ -65,7 +67,6 @@ public class PlayerMovement : MonoBehaviour {
             transform.GetChild(0).localPosition = Vector3.Lerp(transform.GetChild(0).localPosition, new Vector3(0, 0, 0), Time.deltaTime);
             transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(20, 0, 0), Time.deltaTime * 10);
 
-            //character.renderHead.transform.localPosition = character.originHead + character.renderHead.transform.up * (idleHeadCurve.Evaluate(timer) * 0.5f);
         }
     }
 }

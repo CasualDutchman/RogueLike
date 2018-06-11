@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
+//manager for the room
 public class Room : MonoBehaviour {
 
     LevelManager levelManager;
@@ -47,6 +48,7 @@ public class Room : MonoBehaviour {
         }
 	}
 
+    //what happens when you first join the room
     void FirstJoin() {
         if (roomData.roomType == RoomType.Room && !spawnRoom) {
             SpawnEnemies();
@@ -57,17 +59,21 @@ public class Room : MonoBehaviour {
         }
     }
 
+    //spawn enemies in the rooms
     void SpawnEnemies() {
         for (int i = 0; i < roomData.enemyPositions.Count; i++) {
             GameObject go = Instantiate(levelManager.theme.enemies[Random.Range(0, levelManager.theme.enemies.Length)], transform.GetChild(0));
-            go.GetComponent<NavMeshAgent>().enabled = false;
+
+            go.GetComponent<NavMeshAgent>().enabled = false;//when not turned off, the NavMeshAgent would spawn in a different locaiton
             go.transform.position = roomData.enemyPositions[i];
             go.GetComponent<NavMeshAgent>().enabled = true;
+
             go.GetComponent<Enemy>().target = levelManager.player;
             enemies.Add(go.GetComponent<Enemy>());
         }
     }
 
+    //spawn the end boss
     void SpawnBoss() {
         GameObject go = Instantiate(levelManager.theme.enemies[Random.Range(0, levelManager.theme.enemies.Length)], transform.GetChild(0));
         go.GetComponent<NavMeshAgent>().enabled = false;
@@ -82,6 +88,7 @@ public class Room : MonoBehaviour {
         enemies.Add(go.GetComponent<Enemy>());
     }
 
+    //add doors to the entrances.
     void CloseDoors() {
         foreach (KeyValuePair<Vector3, float> doorPos in roomData.doorLocations) {
             GameObject go = Instantiate(levelManager.theme.doorClosedObject, doorPos.Key, Quaternion.Euler(0, doorPos.Value, 0));
@@ -92,6 +99,7 @@ public class Room : MonoBehaviour {
         levelManager.player.position = Vector3.Lerp(levelManager.player.position, roomData.node.worldPosition, 0.1f);
     }
 
+    //remove doors
     void OpenDoors() {
         while(doors.Count > 0) {
             Destroy(doors[0]);
@@ -107,8 +115,6 @@ public class Room : MonoBehaviour {
             closed = true;
             FirstJoin();
         }
-
-        CameraRig.instance.SetNewPosition(roomData.node.worldPosition);
 
         if (endRoom)
             Debug.Log("End Game");

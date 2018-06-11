@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//changes the localposition in a random waY
 public class Wobble : MonoBehaviour {
 
     public Transform wobbler;

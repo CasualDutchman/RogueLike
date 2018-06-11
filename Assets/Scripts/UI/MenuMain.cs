@@ -53,8 +53,9 @@ public class MenuMain : MonoBehaviour {
         }
     }
 
+    //when you first start the game
     void OnstartGame() {
-        if (HasSave()) {
+        if (HasSave()) {// change character to saved oufit and add continue button
             string[] data = PlayerPrefs.GetString("CharacterSkin").Split('/');
             character.SetNewCharacter(character.custom.GetCharacter(int.Parse(data[0]), int.Parse(data[1]), int.Parse(data[2]), int.Parse(data[3]), int.Parse(data[4])));
 
@@ -68,7 +69,8 @@ public class MenuMain : MonoBehaviour {
             small.transform.GetChild(0).GetComponent<Text>().text = "New";
             big.onClick.AddListener(() => Continue());
             small.onClick.AddListener(() => New());
-        } else {
+        } 
+        else {//radomize outfit and disable continue button
             indexes[0] = Random.Range(0, character.custom.hairs.Count);
             indexes[1] = Random.Range(0, character.custom.heads.Count);
             indexes[2] = Random.Range(0, character.custom.faces.Count);
@@ -83,6 +85,7 @@ public class MenuMain : MonoBehaviour {
         }
     }
 
+    //when the continue button is pressed
     void OnContinuedGame() {
         string[] data = PlayerPrefs.GetString("CharacterSkin").Split('/');
         character.SetNewCharacter(character.custom.GetCharacter(int.Parse(data[0]), int.Parse(data[1]), int.Parse(data[2]), int.Parse(data[3]), int.Parse(data[4])));
@@ -104,6 +107,7 @@ public class MenuMain : MonoBehaviour {
         return PlayerPrefs.HasKey("CharacterSkin");
     }
 
+    //On Continue
     public void Continue() {
         mainUI.SetActive(false);
         createUI.SetActive(false);
@@ -116,6 +120,7 @@ public class MenuMain : MonoBehaviour {
         playerCharacter.GetComponent<PlayerMovement>().enabled = true;
     }
 
+    //On New
     public void New() {
         mainUI.SetActive(false);
         createUI.SetActive(true);
@@ -129,6 +134,7 @@ public class MenuMain : MonoBehaviour {
         }
     }
 
+    //Add to the index of the pressed character-customization button
     public void PlusItem(int i) {
         print(i);
         indexes[i]++;
@@ -142,6 +148,7 @@ public class MenuMain : MonoBehaviour {
         character.SetNewCharacter(character.custom.GetCharacter(indexes[0], indexes[1], indexes[2], indexes[3], indexes[4]));
     }
 
+    //Subtract from the index of the pressed character-customization button
     public void MinusItem(int i) {
         indexes[i]--;
         if (indexes[i] < 0) {
@@ -157,6 +164,7 @@ public class MenuMain : MonoBehaviour {
         character.SetNewCharacter(character.custom.GetCharacter(indexes[0], indexes[1], indexes[2], indexes[3], indexes[4]));
     }
 
+    //save the player outfit
     public void Save() {
         string str = indexes[0].ToString() + "/" + indexes[1].ToString() + "/" + indexes[2].ToString() + "/" + indexes[3].ToString() + "/" + indexes[4].ToString();
         PlayerPrefs.SetString("CharacterSkin", str);
@@ -165,6 +173,7 @@ public class MenuMain : MonoBehaviour {
         Continue();
     }
 
+    //zoom camera out when continue is pressed
     IEnumerator ZoomOut() {
         float timer = 0;
 

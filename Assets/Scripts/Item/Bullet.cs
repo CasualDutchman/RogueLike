@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//each bullet checks its own data
 public class Bullet : MonoBehaviour {
 
     LayerMask hitMask;

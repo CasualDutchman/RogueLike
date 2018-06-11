@@ -51,13 +51,12 @@ public class LevelManager : MonoBehaviour {
             easyLevelSettings.seed = PlayerPrefs.GetInt("Seed");
         }
 
-        //Debug.Log(PlayerPrefs.GetInt("Seed"));
-
         levelGenerator = GetComponent<LevelGeneration>();
         levelGenerator.levelManager = this;
         levelGenerator.genStages = 100;
         levelGenerator.ClearLevel();
 
+        //start spawning
         levelGenerator.GenerateLevel(usePlayerPref && hasCustomSettings ? customLevelSettings : easyLevelSettings, theme, disableRoomDespawning);
 
     }
